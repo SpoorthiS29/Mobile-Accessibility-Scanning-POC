@@ -1,0 +1,21 @@
+server:
+  port: 8080
+
+spring:
+  application:
+    name: mobile-a11y-poc
+
+logging:
+  level:
+    com.poc.a11y: INFO
+    io.appium: WARN
+
+# Config for the real-ATF harness invoked by com.poc.a11y.atf.* (see atf-harness/).
+atf:
+  adb-path: adb
+  harness-test-package: com.poc.a11y.atf.harness.test
+  harness-instrumentation-runner: androidx.test.runner.AndroidJUnitRunner
+  harness-test-class: com.poc.a11y.atf.harness.AtfScanTest
+  device-result-path: /sdcard/Android/data/com.poc.a11y.atf.harness/files/atf-result.json
+  device-shots-path: /sdcard/Android/data/com.poc.a11y.atf.harness/files/shots
+  am-instrument-timeout-seconds: 300

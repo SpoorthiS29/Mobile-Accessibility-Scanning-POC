@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="utf-8"?>
+<manifest xmlns:android="http://schemas.android.com/apk/res/android">
+
+    <!--
+      Deliberately minimal: no launcher activity, no permissions beyond what
+      the test APK below needs. This app only exists as an instrumentation
+      target so `am instrument` has a package to attach to; the actual
+      scanning happens in the androidTest source set, driven from the
+      Spring Boot service via adb.
+    -->
+    <application
+        android:label="ATF Harness"
+        android:allowBackup="false" />
+
+</manifest>

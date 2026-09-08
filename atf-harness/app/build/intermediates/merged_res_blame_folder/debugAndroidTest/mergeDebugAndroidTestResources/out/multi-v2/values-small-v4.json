@@ -1,0 +1,19 @@
+{
+    "logs": [
+        {
+            "outputFile": "com.poc.a11y.atf.harness.test.app-mergeDebugAndroidTestResources-23:/values-small-v4/values-small-v4.xml",
+            "map": [
+                {
+                    "source": "C:\\Users\\User\\.gradle\\caches\\9.1.0\\transforms\\3a6bb702508a427951d567e37ace88b9\\workspace\\transformed\\material-1.2.0-rc01\\res\\values-small-v4\\values-small-v4.xml",
+                    "from": {
+                        "startLines": "2,3,4,5",
+                        "startColumns": "4,4,4,4",
+                        "startOffsets": "55,128,198,270",
+                        "endColumns": "72,69,71,69",
+                        "endOffsets": "123,193,265,335"
+                    }
+                }
+            ]
+        }
+    ]
+}

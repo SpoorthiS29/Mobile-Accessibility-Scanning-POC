@@ -1,0 +1,956 @@
+{
+  "density" : 2.8125,
+  "resultCount" : 50,
+  "viewportCount" : 1,
+  "results" : [ {
+    "checkClass" : "SpeakableTextPresentCheck",
+    "checkOriginalClass" : "com.google.android.apps.common.testing.accessibility.framework.checks.SpeakableTextPresentCheck",
+    "type" : "ERROR",
+    "resultId" : 4,
+    "message" : "This item may not have a label readable by screen readers.",
+    "screenshotFile" : "C:\\Users\\User\\Downloads\\mobile-a11y-poc\\atf-results\\atf-scan-big4-20260907_152522-shots\\shots\\issue-0001.png",
+    "element" : {
+      "className" : "android.widget.Button",
+      "resourceName" : "myAccountHomePage",
+      "contentDescription" : "",
+      "text" : "",
+      "clickable" : true,
+      "enabled" : true,
+      "left" : 956,
+      "top" : 91,
+      "right" : 1046,
+      "bottom" : 181
+    }
+  }, {
+    "checkClass" : "SpeakableTextPresentCheck",
+    "checkOriginalClass" : "com.google.android.apps.common.testing.accessibility.framework.checks.SpeakableTextPresentCheck",
+    "type" : "ERROR",
+    "resultId" : 4,
+    "message" : "This item may not have a label readable by screen readers.",
+    "screenshotFile" : "C:\\Users\\User\\Downloads\\mobile-a11y-poc\\atf-results\\atf-scan-big4-20260907_152522-shots\\shots\\issue-0002.png",
+    "element" : {
+      "className" : "android.widget.Button",
+      "resourceName" : "backButton",
+      "contentDescription" : "",
+      "text" : "",
+      "clickable" : true,
+      "enabled" : true,
+      "left" : 79,
+      "top" : 269,
+      "right" : 135,
+      "bottom" : 325
+    }
+  }, {
+    "checkClass" : "SpeakableTextPresentCheck",
+    "checkOriginalClass" : "com.google.android.apps.common.testing.accessibility.framework.checks.SpeakableTextPresentCheck",
+    "type" : "ERROR",
+    "resultId" : 4,
+    "message" : "This item may not have a label readable by screen readers.",
+    "screenshotFile" : "C:\\Users\\User\\Downloads\\mobile-a11y-poc\\atf-results\\atf-scan-big4-20260907_152522-shots\\shots\\issue-0003.png",
+    "element" : {
+      "className" : "android.widget.Button",
+      "resourceName" : "voiceButton",
+      "contentDescription" : "",
+      "text" : "",
+      "clickable" : true,
+      "enabled" : true,
+      "left" : 695,
+      "top" : 269,
+      "right" : 751,
+      "bottom" : 325
+    }
+  }, {
+    "checkClass" : "SpeakableTextPresentCheck",
+    "checkOriginalClass" : "com.google.android.apps.common.testing.accessibility.framework.checks.SpeakableTextPresentCheck",
+    "type" : "ERROR",
+    "resultId" : 4,
+    "message" : "This item may not have a label readable by screen readers.",
+    "screenshotFile" : "C:\\Users\\User\\Downloads\\mobile-a11y-poc\\atf-results\\atf-scan-big4-20260907_152522-shots\\shots\\issue-0004.png",
+    "element" : {
+      "className" : "android.view.View",
+      "resourceName" : "",
+      "contentDescription" : "",
+      "text" : "",
+      "clickable" : true,
+      "enabled" : true,
+      "left" : 852,
+      "top" : 269,
+      "right" : 908,
+      "bottom" : 325
+    }
+  }, {
+    "checkClass" : "SpeakableTextPresentCheck",
+    "checkOriginalClass" : "com.google.android.apps.common.testing.accessibility.framework.checks.SpeakableTextPresentCheck",
+    "type" : "ERROR",
+    "resultId" : 4,
+    "message" : "This item may not have a label readable by screen readers.",
+    "screenshotFile" : "C:\\Users\\User\\Downloads\\mobile-a11y-poc\\atf-results\\atf-scan-big4-20260907_152522-shots\\shots\\issue-0005.png",
+    "element" : {
+      "className" : "android.view.View",
+      "resourceName" : "",
+      "contentDescription" : "",
+      "text" : "",
+      "clickable" : true,
+      "enabled" : true,
+      "left" : 956,
+      "top" : 269,
+      "right" : 1013,
+      "bottom" : 325
+    }
+  }, {
+    "checkClass" : "SpeakableTextPresentCheck",
+    "checkOriginalClass" : "com.google.android.apps.common.testing.accessibility.framework.checks.SpeakableTextPresentCheck",
+    "type" : "ERROR",
+    "resultId" : 4,
+    "message" : "This item may not have a label readable by screen readers.",
+    "screenshotFile" : "C:\\Users\\User\\Downloads\\mobile-a11y-poc\\atf-results\\atf-scan-big4-20260907_152522-shots\\shots\\issue-0006.png",
+    "element" : {
+      "className" : "android.widget.ImageView",
+      "resourceName" : "wishlist",
+      "contentDescription" : "",
+      "text" : "",
+      "clickable" : true,
+      "enabled" : true,
+      "left" : 284,
+      "top" : 1400,
+      "right" : 374,
+      "bottom" : 1490
+    }
+  }, {
+    "checkClass" : "SpeakableTextPresentCheck",
+    "checkOriginalClass" : "com.google.android.apps.common.testing.accessibility.framework.checks.SpeakableTextPresentCheck",
+    "type" : "ERROR",
+    "resultId" : 4,
+    "message" : "This item may not have a label readable by screen readers.",
+    "screenshotFile" : "C:\\Users\\User\\Downloads\\mobile-a11y-poc\\atf-results\\atf-scan-big4-20260907_152522-shots\\shots\\issue-0007.png",
+    "element" : {
+      "className" : "android.widget.Button",
+      "resourceName" : "addButtonProduct",
+      "contentDescription" : "",
+      "text" : "",
+      "clickable" : true,
+      "enabled" : true,
+      "left" : 284,
+      "top" : 1658,
+      "right" : 385,
+      "bottom" : 1760
+    }
+  }, {
+    "checkClass" : "SpeakableTextPresentCheck",
+    "checkOriginalClass" : "com.google.android.apps.common.testing.accessibility.framework.checks.SpeakableTextPresentCheck",
+    "type" : "ERROR",
+    "resultId" : 4,
+    "message" : "This item may not have a label readable by screen readers.",
+    "screenshotFile" : "C:\\Users\\User\\Downloads\\mobile-a11y-poc\\atf-results\\atf-scan-big4-20260907_152522-shots\\shots\\issue-0008.png",
+    "element" : {
+      "className" : "android.widget.ImageView",
+      "resourceName" : "wishlist",
+      "contentDescription" : "",
+      "text" : "",
+      "clickable" : true,
+      "enabled" : true,
+      "left" : 668,
+      "top" : 1400,
+      "right" : 758,
+      "bottom" : 1490
+    }
+  }, {
+    "checkClass" : "SpeakableTextPresentCheck",
+    "checkOriginalClass" : "com.google.android.apps.common.testing.accessibility.framework.checks.SpeakableTextPresentCheck",
+    "type" : "ERROR",
+    "resultId" : 4,
+    "message" : "This item may not have a label readable by screen readers.",
+    "screenshotFile" : "C:\\Users\\User\\Downloads\\mobile-a11y-poc\\atf-results\\atf-scan-big4-20260907_152522-shots\\shots\\issue-0009.png",
+    "element" : {
+      "className" : "android.widget.Button",
+      "resourceName" : "addButtonProduct",
+      "contentDescription" : "",
+      "text" : "",
+      "clickable" : true,
+      "enabled" : true,
+      "left" : 668,
+      "top" : 1658,
+      "right" : 769,
+      "bottom" : 1760
+    }
+  }, {
+    "checkClass" : "TouchTargetSizeCheck",
+    "checkOriginalClass" : "com.google.android.apps.common.testing.accessibility.framework.checks.TouchTargetSizeCheck",
+    "type" : "ERROR",
+    "resultId" : 4,
+    "message" : "This item's height is 21dp. Consider making the height of this touch target 48dp or larger.",
+    "screenshotFile" : "C:\\Users\\User\\Downloads\\mobile-a11y-poc\\atf-results\\atf-scan-big4-20260907_152522-shots\\shots\\issue-0010.png",
+    "element" : {
+      "className" : "android.view.View",
+      "resourceName" : "addressChangeBtn",
+      "contentDescription" : "tooltipContainer\nSelected Location - Vishweshwarapura, Basavanagudi, Bengaluru - 560004",
+      "text" : "",
+      "clickable" : true,
+      "enabled" : true,
+      "left" : 34,
+      "top" : 148,
+      "right" : 934,
+      "bottom" : 207
+    }
+  }, {
+    "checkClass" : "TouchTargetSizeCheck",
+    "checkOriginalClass" : "com.google.android.apps.common.testing.accessibility.framework.checks.TouchTargetSizeCheck",
+    "type" : "ERROR",
+    "resultId" : 3,
+    "message" : "This item's size is 32dp x 32dp. Consider making this touch target 48dp wide and 48dp high or larger.",
+    "screenshotFile" : "C:\\Users\\User\\Downloads\\mobile-a11y-poc\\atf-results\\atf-scan-big4-20260907_152522-shots\\shots\\issue-0001.png",
+    "element" : {
+      "className" : "android.widget.Button",
+      "resourceName" : "myAccountHomePage",
+      "contentDescription" : "",
+      "text" : "",
+      "clickable" : true,
+      "enabled" : true,
+      "left" : 956,
+      "top" : 91,
+      "right" : 1046,
+      "bottom" : 181
+    }
+  }, {
+    "checkClass" : "TouchTargetSizeCheck",
+    "checkOriginalClass" : "com.google.android.apps.common.testing.accessibility.framework.checks.TouchTargetSizeCheck",
+    "type" : "ERROR",
+    "resultId" : 3,
+    "message" : "This item's size is 20dp x 20dp. Consider making this touch target 48dp wide and 48dp high or larger.",
+    "screenshotFile" : "C:\\Users\\User\\Downloads\\mobile-a11y-poc\\atf-results\\atf-scan-big4-20260907_152522-shots\\shots\\issue-0002.png",
+    "element" : {
+      "className" : "android.widget.Button",
+      "resourceName" : "backButton",
+      "contentDescription" : "",
+      "text" : "",
+      "clickable" : true,
+      "enabled" : true,
+      "left" : 79,
+      "top" : 269,
+      "right" : 135,
+      "bottom" : 325
+    }
+  }, {
+    "checkClass" : "TouchTargetSizeCheck",
+    "checkOriginalClass" : "com.google.android.apps.common.testing.accessibility.framework.checks.TouchTargetSizeCheck",
+    "type" : "ERROR",
+    "resultId" : 3,
+    "message" : "This item's size is 20dp x 20dp. Consider making this touch target 48dp wide and 48dp high or larger.",
+    "screenshotFile" : "C:\\Users\\User\\Downloads\\mobile-a11y-poc\\atf-results\\atf-scan-big4-20260907_152522-shots\\shots\\issue-0003.png",
+    "element" : {
+      "className" : "android.widget.Button",
+      "resourceName" : "voiceButton",
+      "contentDescription" : "",
+      "text" : "",
+      "clickable" : true,
+      "enabled" : true,
+      "left" : 695,
+      "top" : 269,
+      "right" : 751,
+      "bottom" : 325
+    }
+  }, {
+    "checkClass" : "TouchTargetSizeCheck",
+    "checkOriginalClass" : "com.google.android.apps.common.testing.accessibility.framework.checks.TouchTargetSizeCheck",
+    "type" : "ERROR",
+    "resultId" : 3,
+    "message" : "This item's size is 20dp x 20dp. Consider making this touch target 48dp wide and 48dp high or larger.",
+    "screenshotFile" : "C:\\Users\\User\\Downloads\\mobile-a11y-poc\\atf-results\\atf-scan-big4-20260907_152522-shots\\shots\\issue-0004.png",
+    "element" : {
+      "className" : "android.view.View",
+      "resourceName" : "",
+      "contentDescription" : "",
+      "text" : "",
+      "clickable" : true,
+      "enabled" : true,
+      "left" : 852,
+      "top" : 269,
+      "right" : 908,
+      "bottom" : 325
+    }
+  }, {
+    "checkClass" : "TouchTargetSizeCheck",
+    "checkOriginalClass" : "com.google.android.apps.common.testing.accessibility.framework.checks.TouchTargetSizeCheck",
+    "type" : "ERROR",
+    "resultId" : 3,
+    "message" : "This item's size is 20dp x 20dp. Consider making this touch target 48dp wide and 48dp high or larger.",
+    "screenshotFile" : "C:\\Users\\User\\Downloads\\mobile-a11y-poc\\atf-results\\atf-scan-big4-20260907_152522-shots\\shots\\issue-0005.png",
+    "element" : {
+      "className" : "android.view.View",
+      "resourceName" : "",
+      "contentDescription" : "",
+      "text" : "",
+      "clickable" : true,
+      "enabled" : true,
+      "left" : 956,
+      "top" : 269,
+      "right" : 1013,
+      "bottom" : 325
+    }
+  }, {
+    "checkClass" : "TouchTargetSizeCheck",
+    "checkOriginalClass" : "com.google.android.apps.common.testing.accessibility.framework.checks.TouchTargetSizeCheck",
+    "type" : "WARNING",
+    "resultId" : 4,
+    "message" : "This item's height is 39dp. Consider making the height of this touch target 48dp or larger. A parent container may be handling touch events for this item. If selecting the larger container performs the same action as selecting this item, consider defining this item as not clickable. If a different action is performed, consider increasing the size of this item.",
+    "screenshotFile" : "C:\\Users\\User\\Downloads\\mobile-a11y-poc\\atf-results\\atf-scan-big4-20260907_152522-shots\\shots\\issue-0011.png",
+    "element" : {
+      "className" : "android.view.View",
+      "resourceName" : "",
+      "contentDescription" : "Order again",
+      "text" : "",
+      "clickable" : true,
+      "enabled" : true,
+      "left" : 36,
+      "top" : 1243,
+      "right" : 540,
+      "bottom" : 1352
+    }
+  }, {
+    "checkClass" : "TouchTargetSizeCheck",
+    "checkOriginalClass" : "com.google.android.apps.common.testing.accessibility.framework.checks.TouchTargetSizeCheck",
+    "type" : "WARNING",
+    "resultId" : 4,
+    "message" : "This item's height is 39dp. Consider making the height of this touch target 48dp or larger. A parent container may be handling touch events for this item. If selecting the larger container performs the same action as selecting this item, consider defining this item as not clickable. If a different action is performed, consider increasing the size of this item.",
+    "screenshotFile" : "C:\\Users\\User\\Downloads\\mobile-a11y-poc\\atf-results\\atf-scan-big4-20260907_152522-shots\\shots\\issue-0012.png",
+    "element" : {
+      "className" : "android.view.View",
+      "resourceName" : "",
+      "contentDescription" : "Best prices",
+      "text" : "",
+      "clickable" : true,
+      "enabled" : true,
+      "left" : 540,
+      "top" : 1243,
+      "right" : 1044,
+      "bottom" : 1352
+    }
+  }, {
+    "checkClass" : "TouchTargetSizeCheck",
+    "checkOriginalClass" : "com.google.android.apps.common.testing.accessibility.framework.checks.TouchTargetSizeCheck",
+    "type" : "WARNING",
+    "resultId" : 3,
+    "message" : "This item's size is 32dp x 32dp. Consider making this touch target 48dp wide and 48dp high or larger. A parent container may be handling touch events for this item. If selecting the larger container performs the same action as selecting this item, consider defining this item as not clickable. If a different action is performed, consider increasing the size of this item.",
+    "screenshotFile" : "C:\\Users\\User\\Downloads\\mobile-a11y-poc\\atf-results\\atf-scan-big4-20260907_152522-shots\\shots\\issue-0006.png",
+    "element" : {
+      "className" : "android.widget.ImageView",
+      "resourceName" : "wishlist",
+      "contentDescription" : "",
+      "text" : "",
+      "clickable" : true,
+      "enabled" : true,
+      "left" : 284,
+      "top" : 1400,
+      "right" : 374,
+      "bottom" : 1490
+    }
+  }, {
+    "checkClass" : "TouchTargetSizeCheck",
+    "checkOriginalClass" : "com.google.android.apps.common.testing.accessibility.framework.checks.TouchTargetSizeCheck",
+    "type" : "WARNING",
+    "resultId" : 3,
+    "message" : "This item's size is 36dp x 36dp. Consider making this touch target 48dp wide and 48dp high or larger. A parent container may be handling touch events for this item. If selecting the larger container performs the same action as selecting this item, consider defining this item as not clickable. If a different action is performed, consider increasing the size of this item.",
+    "screenshotFile" : "C:\\Users\\User\\Downloads\\mobile-a11y-poc\\atf-results\\atf-scan-big4-20260907_152522-shots\\shots\\issue-0013.png",
+    "element" : {
+      "className" : "android.view.View",
+      "resourceName" : "",
+      "contentDescription" : "",
+      "text" : "",
+      "clickable" : true,
+      "enabled" : true,
+      "left" : 284,
+      "top" : 1658,
+      "right" : 385,
+      "bottom" : 1760
+    }
+  }, {
+    "checkClass" : "TouchTargetSizeCheck",
+    "checkOriginalClass" : "com.google.android.apps.common.testing.accessibility.framework.checks.TouchTargetSizeCheck",
+    "type" : "WARNING",
+    "resultId" : 3,
+    "message" : "This item's size is 36dp x 36dp. Consider making this touch target 48dp wide and 48dp high or larger. A parent container may be handling touch events for this item. If selecting the larger container performs the same action as selecting this item, consider defining this item as not clickable. If a different action is performed, consider increasing the size of this item.",
+    "screenshotFile" : "C:\\Users\\User\\Downloads\\mobile-a11y-poc\\atf-results\\atf-scan-big4-20260907_152522-shots\\shots\\issue-0007.png",
+    "element" : {
+      "className" : "android.widget.Button",
+      "resourceName" : "addButtonProduct",
+      "contentDescription" : "",
+      "text" : "",
+      "clickable" : true,
+      "enabled" : true,
+      "left" : 284,
+      "top" : 1658,
+      "right" : 385,
+      "bottom" : 1760
+    }
+  }, {
+    "checkClass" : "TouchTargetSizeCheck",
+    "checkOriginalClass" : "com.google.android.apps.common.testing.accessibility.framework.checks.TouchTargetSizeCheck",
+    "type" : "WARNING",
+    "resultId" : 4,
+    "message" : "This item's height is 16dp. Consider making the height of this touch target 48dp or larger. A parent container may be handling touch events for this item. If selecting the larger container performs the same action as selecting this item, consider defining this item as not clickable. If a different action is performed, consider increasing the size of this item.",
+    "screenshotFile" : "C:\\Users\\User\\Downloads\\mobile-a11y-poc\\atf-results\\atf-scan-big4-20260907_152522-shots\\shots\\issue-0014.png",
+    "element" : {
+      "className" : "android.view.View",
+      "resourceName" : "productPackSizeButton",
+      "contentDescription" : "250 g",
+      "text" : "",
+      "clickable" : true,
+      "enabled" : true,
+      "left" : 59,
+      "top" : 1976,
+      "right" : 374,
+      "bottom" : 2021
+    }
+  }, {
+    "checkClass" : "TouchTargetSizeCheck",
+    "checkOriginalClass" : "com.google.android.apps.common.testing.accessibility.framework.checks.TouchTargetSizeCheck",
+    "type" : "WARNING",
+    "resultId" : 3,
+    "message" : "This item's size is 32dp x 32dp. Consider making this touch target 48dp wide and 48dp high or larger. A parent container may be handling touch events for this item. If selecting the larger container performs the same action as selecting this item, consider defining this item as not clickable. If a different action is performed, consider increasing the size of this item.",
+    "screenshotFile" : "C:\\Users\\User\\Downloads\\mobile-a11y-poc\\atf-results\\atf-scan-big4-20260907_152522-shots\\shots\\issue-0008.png",
+    "element" : {
+      "className" : "android.widget.ImageView",
+      "resourceName" : "wishlist",
+      "contentDescription" : "",
+      "text" : "",
+      "clickable" : true,
+      "enabled" : true,
+      "left" : 668,
+      "top" : 1400,
+      "right" : 758,
+      "bottom" : 1490
+    }
+  }, {
+    "checkClass" : "TouchTargetSizeCheck",
+    "checkOriginalClass" : "com.google.android.apps.common.testing.accessibility.framework.checks.TouchTargetSizeCheck",
+    "type" : "WARNING",
+    "resultId" : 3,
+    "message" : "This item's size is 36dp x 36dp. Consider making this touch target 48dp wide and 48dp high or larger. A parent container may be handling touch events for this item. If selecting the larger container performs the same action as selecting this item, consider defining this item as not clickable. If a different action is performed, consider increasing the size of this item.",
+    "screenshotFile" : "C:\\Users\\User\\Downloads\\mobile-a11y-poc\\atf-results\\atf-scan-big4-20260907_152522-shots\\shots\\issue-0015.png",
+    "element" : {
+      "className" : "android.view.View",
+      "resourceName" : "",
+      "contentDescription" : "",
+      "text" : "",
+      "clickable" : true,
+      "enabled" : true,
+      "left" : 668,
+      "top" : 1658,
+      "right" : 769,
+      "bottom" : 1760
+    }
+  }, {
+    "checkClass" : "TouchTargetSizeCheck",
+    "checkOriginalClass" : "com.google.android.apps.common.testing.accessibility.framework.checks.TouchTargetSizeCheck",
+    "type" : "WARNING",
+    "resultId" : 3,
+    "message" : "This item's size is 36dp x 36dp. Consider making this touch target 48dp wide and 48dp high or larger. A parent container may be handling touch events for this item. If selecting the larger container performs the same action as selecting this item, consider defining this item as not clickable. If a different action is performed, consider increasing the size of this item.",
+    "screenshotFile" : "C:\\Users\\User\\Downloads\\mobile-a11y-poc\\atf-results\\atf-scan-big4-20260907_152522-shots\\shots\\issue-0009.png",
+    "element" : {
+      "className" : "android.widget.Button",
+      "resourceName" : "addButtonProduct",
+      "contentDescription" : "",
+      "text" : "",
+      "clickable" : true,
+      "enabled" : true,
+      "left" : 668,
+      "top" : 1658,
+      "right" : 769,
+      "bottom" : 1760
+    }
+  }, {
+    "checkClass" : "TouchTargetSizeCheck",
+    "checkOriginalClass" : "com.google.android.apps.common.testing.accessibility.framework.checks.TouchTargetSizeCheck",
+    "type" : "WARNING",
+    "resultId" : 4,
+    "message" : "This item's height is 16dp. Consider making the height of this touch target 48dp or larger. A parent container may be handling touch events for this item. If selecting the larger container performs the same action as selecting this item, consider defining this item as not clickable. If a different action is performed, consider increasing the size of this item.",
+    "screenshotFile" : "C:\\Users\\User\\Downloads\\mobile-a11y-poc\\atf-results\\atf-scan-big4-20260907_152522-shots\\shots\\issue-0016.png",
+    "element" : {
+      "className" : "android.view.View",
+      "resourceName" : "productPackSizeButton",
+      "contentDescription" : "500 g",
+      "text" : "",
+      "clickable" : true,
+      "enabled" : true,
+      "left" : 443,
+      "top" : 1976,
+      "right" : 758,
+      "bottom" : 2021
+    }
+  }, {
+    "checkClass" : "DuplicateSpeakableTextCheck",
+    "checkOriginalClass" : "com.google.android.apps.common.testing.accessibility.framework.checks.DuplicateSpeakableTextCheck",
+    "type" : "INFO",
+    "resultId" : 2,
+    "message" : "This non-clickable item's speakable text: \"30% OFF\" is identical to that of 1 other item(s).",
+    "screenshotFile" : "C:\\Users\\User\\Downloads\\mobile-a11y-poc\\atf-results\\atf-scan-big4-20260907_152522-shots\\shots\\issue-0017.png",
+    "element" : {
+      "className" : "android.view.View",
+      "resourceName" : "offerCard",
+      "contentDescription" : "30% OFF",
+      "text" : "",
+      "clickable" : false,
+      "enabled" : true,
+      "left" : 59,
+      "top" : 1771,
+      "right" : 206,
+      "bottom" : 1822
+    }
+  }, {
+    "checkClass" : "DuplicateSpeakableTextCheck",
+    "checkOriginalClass" : "com.google.android.apps.common.testing.accessibility.framework.checks.DuplicateSpeakableTextCheck",
+    "type" : "INFO",
+    "resultId" : 2,
+    "message" : "This non-clickable item's speakable text: \"fresho!\" is identical to that of 2 other item(s).",
+    "screenshotFile" : "C:\\Users\\User\\Downloads\\mobile-a11y-poc\\atf-results\\atf-scan-big4-20260907_152522-shots\\shots\\issue-0018.png",
+    "element" : {
+      "className" : "android.view.View",
+      "resourceName" : "brandLabel",
+      "contentDescription" : "fresho!",
+      "text" : "",
+      "clickable" : false,
+      "enabled" : true,
+      "left" : 59,
+      "top" : 1886,
+      "right" : 374,
+      "bottom" : 1923
+    }
+  }, {
+    "checkClass" : "DuplicateSpeakableTextCheck",
+    "checkOriginalClass" : "com.google.android.apps.common.testing.accessibility.framework.checks.DuplicateSpeakableTextCheck",
+    "type" : "INFO",
+    "resultId" : 2,
+    "message" : "This non-clickable item's speakable text: \"Coriander Leaves\" is identical to that of 1 other item(s).",
+    "screenshotFile" : "C:\\Users\\User\\Downloads\\mobile-a11y-poc\\atf-results\\atf-scan-big4-20260907_152522-shots\\shots\\issue-0019.png",
+    "element" : {
+      "className" : "android.view.View",
+      "resourceName" : "skuName",
+      "contentDescription" : "Coriander Leaves",
+      "text" : "",
+      "clickable" : false,
+      "enabled" : true,
+      "left" : 59,
+      "top" : 1923,
+      "right" : 374,
+      "bottom" : 1965
+    }
+  }, {
+    "checkClass" : "DuplicateSpeakableTextCheck",
+    "checkOriginalClass" : "com.google.android.apps.common.testing.accessibility.framework.checks.DuplicateSpeakableTextCheck",
+    "type" : "WARNING",
+    "resultId" : 1,
+    "message" : "This clickable item's speakable text: \"250 g\" is identical to that of 1 other item(s).",
+    "screenshotFile" : "C:\\Users\\User\\Downloads\\mobile-a11y-poc\\atf-results\\atf-scan-big4-20260907_152522-shots\\shots\\issue-0014.png",
+    "element" : {
+      "className" : "android.view.View",
+      "resourceName" : "productPackSizeButton",
+      "contentDescription" : "250 g",
+      "text" : "",
+      "clickable" : true,
+      "enabled" : true,
+      "left" : 59,
+      "top" : 1976,
+      "right" : 374,
+      "bottom" : 2021
+    }
+  }, {
+    "checkClass" : "DuplicateSpeakableTextCheck",
+    "checkOriginalClass" : "com.google.android.apps.common.testing.accessibility.framework.checks.DuplicateSpeakableTextCheck",
+    "type" : "INFO",
+    "resultId" : 2,
+    "message" : "This non-clickable item's speakable text: \"₹20\" is identical to that of 1 other item(s).",
+    "screenshotFile" : "C:\\Users\\User\\Downloads\\mobile-a11y-poc\\atf-results\\atf-scan-big4-20260907_152522-shots\\shots\\issue-0020.png",
+    "element" : {
+      "className" : "android.view.View",
+      "resourceName" : "",
+      "contentDescription" : "₹20",
+      "text" : "",
+      "clickable" : false,
+      "enabled" : true,
+      "left" : 443,
+      "top" : 1827,
+      "right" : 512,
+      "bottom" : 1875
+    }
+  }, {
+    "checkClass" : "DuplicateSpeakableTextCheck",
+    "checkOriginalClass" : "com.google.android.apps.common.testing.accessibility.framework.checks.DuplicateSpeakableTextCheck",
+    "type" : "INFO",
+    "resultId" : 2,
+    "message" : "This non-clickable item's speakable text: \"9 mins\" is identical to that of 6 other item(s).",
+    "screenshotFile" : "C:\\Users\\User\\Downloads\\mobile-a11y-poc\\atf-results\\atf-scan-big4-20260907_152522-shots\\shots\\issue-0021.png",
+    "element" : {
+      "className" : "android.view.View",
+      "resourceName" : "etaDetails",
+      "contentDescription" : "9 mins",
+      "text" : "",
+      "clickable" : false,
+      "enabled" : true,
+      "left" : 84,
+      "top" : 66,
+      "right" : 265,
+      "bottom" : 142
+    }
+  }, {
+    "checkClass" : "DuplicateSpeakableTextCheck",
+    "checkOriginalClass" : "com.google.android.apps.common.testing.accessibility.framework.checks.DuplicateSpeakableTextCheck",
+    "type" : "INFO",
+    "resultId" : 2,
+    "message" : "This non-clickable item's speakable text: \"69% OFF\" is identical to that of 1 other item(s).",
+    "screenshotFile" : "C:\\Users\\User\\Downloads\\mobile-a11y-poc\\atf-results\\atf-scan-big4-20260907_152522-shots\\shots\\issue-0022.png",
+    "element" : {
+      "className" : "android.view.View",
+      "resourceName" : "offerCard",
+      "contentDescription" : "69% OFF",
+      "text" : "",
+      "clickable" : false,
+      "enabled" : true,
+      "left" : 443,
+      "top" : 1771,
+      "right" : 589,
+      "bottom" : 1822
+    }
+  }, {
+    "checkClass" : "DuplicateSpeakableTextCheck",
+    "checkOriginalClass" : "com.google.android.apps.common.testing.accessibility.framework.checks.DuplicateSpeakableTextCheck",
+    "type" : "WARNING",
+    "resultId" : 1,
+    "message" : "This clickable item's speakable text: \"Reorder & Save\" is identical to that of 1 other item(s).",
+    "screenshotFile" : "C:\\Users\\User\\Downloads\\mobile-a11y-poc\\atf-results\\atf-scan-big4-20260907_152522-shots\\shots\\issue-0023.png",
+    "element" : {
+      "className" : "android.view.View",
+      "resourceName" : "title",
+      "contentDescription" : "Reorder & Save",
+      "text" : "",
+      "clickable" : true,
+      "enabled" : true,
+      "left" : 0,
+      "top" : 1131,
+      "right" : 1080,
+      "bottom" : 2273
+    }
+  }, {
+    "checkClass" : "DuplicateSpeakableTextCheck",
+    "checkOriginalClass" : "com.google.android.apps.common.testing.accessibility.framework.checks.DuplicateSpeakableTextCheck",
+    "type" : "INFO",
+    "resultId" : 2,
+    "message" : "This non-clickable item's speakable text: \"57% OFF\" is identical to that of 1 other item(s).",
+    "screenshotFile" : "C:\\Users\\User\\Downloads\\mobile-a11y-poc\\atf-results\\atf-scan-big4-20260907_152522-shots\\shots\\issue-0024.png",
+    "element" : {
+      "className" : "android.view.View",
+      "resourceName" : "offerCard",
+      "contentDescription" : "57% OFF",
+      "text" : "",
+      "clickable" : false,
+      "enabled" : true,
+      "left" : 827,
+      "top" : 1771,
+      "right" : 971,
+      "bottom" : 1822
+    }
+  }, {
+    "checkClass" : "DuplicateSpeakableTextCheck",
+    "checkOriginalClass" : "com.google.android.apps.common.testing.accessibility.framework.checks.DuplicateSpeakableTextCheck",
+    "type" : "INFO",
+    "resultId" : 2,
+    "message" : "This non-clickable item's speakable text: \"Carrot - Orange\" is identical to that of 1 other item(s).",
+    "screenshotFile" : "C:\\Users\\User\\Downloads\\mobile-a11y-poc\\atf-results\\atf-scan-big4-20260907_152522-shots\\shots\\issue-0025.png",
+    "element" : {
+      "className" : "android.view.View",
+      "resourceName" : "skuName",
+      "contentDescription" : "Carrot - Orange",
+      "text" : "",
+      "clickable" : false,
+      "enabled" : true,
+      "left" : 443,
+      "top" : 1923,
+      "right" : 758,
+      "bottom" : 1965
+    }
+  }, {
+    "checkClass" : "DuplicateSpeakableTextCheck",
+    "checkOriginalClass" : "com.google.android.apps.common.testing.accessibility.framework.checks.DuplicateSpeakableTextCheck",
+    "type" : "INFO",
+    "resultId" : 2,
+    "message" : "This non-clickable item's speakable text: \"Local Tomato\" is identical to that of 1 other item(s).",
+    "screenshotFile" : "C:\\Users\\User\\Downloads\\mobile-a11y-poc\\atf-results\\atf-scan-big4-20260907_152522-shots\\shots\\issue-0026.png",
+    "element" : {
+      "className" : "android.view.View",
+      "resourceName" : "skuName",
+      "contentDescription" : "Local Tomato",
+      "text" : "",
+      "clickable" : false,
+      "enabled" : true,
+      "left" : 827,
+      "top" : 1987,
+      "right" : 1080,
+      "bottom" : 2030
+    }
+  }, {
+    "checkClass" : "DuplicateSpeakableTextCheck",
+    "checkOriginalClass" : "com.google.android.apps.common.testing.accessibility.framework.checks.DuplicateSpeakableTextCheck",
+    "type" : "WARNING",
+    "resultId" : 1,
+    "message" : "This clickable item's speakable text: \"View more products\" is identical to that of 1 other item(s).",
+    "screenshotFile" : "C:\\Users\\User\\Downloads\\mobile-a11y-poc\\atf-results\\atf-scan-big4-20260907_152522-shots\\shots\\issue-0027.png",
+    "element" : {
+      "className" : "android.widget.Button",
+      "resourceName" : "view_more_products",
+      "contentDescription" : "View more products",
+      "text" : "",
+      "clickable" : true,
+      "enabled" : true,
+      "left" : 36,
+      "top" : 2221,
+      "right" : 1044,
+      "bottom" : 2273
+    }
+  }, {
+    "checkClass" : "DuplicateSpeakableTextCheck",
+    "checkOriginalClass" : "com.google.android.apps.common.testing.accessibility.framework.checks.DuplicateSpeakableTextCheck",
+    "type" : "WARNING",
+    "resultId" : 1,
+    "message" : "This clickable item's speakable text: \"500 g\" is identical to that of 1 other item(s).",
+    "screenshotFile" : "C:\\Users\\User\\Downloads\\mobile-a11y-poc\\atf-results\\atf-scan-big4-20260907_152522-shots\\shots\\issue-0016.png",
+    "element" : {
+      "className" : "android.view.View",
+      "resourceName" : "productPackSizeButton",
+      "contentDescription" : "500 g",
+      "text" : "",
+      "clickable" : true,
+      "enabled" : true,
+      "left" : 443,
+      "top" : 1976,
+      "right" : 758,
+      "bottom" : 2021
+    }
+  }, {
+    "checkClass" : "DuplicateSpeakableTextCheck",
+    "checkOriginalClass" : "com.google.android.apps.common.testing.accessibility.framework.checks.DuplicateSpeakableTextCheck",
+    "type" : "WARNING",
+    "resultId" : 1,
+    "message" : "This clickable item's speakable text: \"1 kg\" is identical to that of 1 other item(s).",
+    "screenshotFile" : "C:\\Users\\User\\Downloads\\mobile-a11y-poc\\atf-results\\atf-scan-big4-20260907_152522-shots\\shots\\issue-0028.png",
+    "element" : {
+      "className" : "android.view.View",
+      "resourceName" : "productPackSizeButton",
+      "contentDescription" : "1 kg",
+      "text" : "",
+      "clickable" : true,
+      "enabled" : true,
+      "left" : 827,
+      "top" : 2041,
+      "right" : 1080,
+      "bottom" : 2086
+    }
+  }, {
+    "checkClass" : "DuplicateClickableBoundsCheck",
+    "checkOriginalClass" : "com.google.android.apps.common.testing.accessibility.framework.checks.DuplicateClickableBoundsCheck",
+    "type" : "ERROR",
+    "resultId" : 1,
+    "message" : "This clickable item has the same on-screen location ([284,1658][385,1760]) as 1 other item(s) with those properties. Conflicting element(s): View addButtonProduct.",
+    "screenshotFile" : "C:\\Users\\User\\Downloads\\mobile-a11y-poc\\atf-results\\atf-scan-big4-20260907_152522-shots\\shots\\issue-0013.png",
+    "element" : {
+      "className" : "android.view.View",
+      "resourceName" : "",
+      "contentDescription" : "",
+      "text" : "",
+      "clickable" : true,
+      "enabled" : true,
+      "left" : 284,
+      "top" : 1658,
+      "right" : 385,
+      "bottom" : 1760
+    }
+  }, {
+    "checkClass" : "DuplicateClickableBoundsCheck",
+    "checkOriginalClass" : "com.google.android.apps.common.testing.accessibility.framework.checks.DuplicateClickableBoundsCheck",
+    "type" : "ERROR",
+    "resultId" : 1,
+    "message" : "This clickable item has the same on-screen location ([668,1658][769,1760]) as 1 other item(s) with those properties. Conflicting element(s): View addButtonProduct.",
+    "screenshotFile" : "C:\\Users\\User\\Downloads\\mobile-a11y-poc\\atf-results\\atf-scan-big4-20260907_152522-shots\\shots\\issue-0015.png",
+    "element" : {
+      "className" : "android.view.View",
+      "resourceName" : "",
+      "contentDescription" : "",
+      "text" : "",
+      "clickable" : true,
+      "enabled" : true,
+      "left" : 668,
+      "top" : 1658,
+      "right" : 769,
+      "bottom" : 1760
+    }
+  }, {
+    "checkClass" : "RedundantDescriptionCheck",
+    "checkOriginalClass" : "com.google.android.apps.common.testing.accessibility.framework.checks.RedundantDescriptionCheck",
+    "type" : "WARNING",
+    "resultId" : 7,
+    "message" : "This item's content description, \"tooltipContainer Selected Location - Vishweshwarapura, Basavanagudi, Bengaluru - 560004\", contains the state \"selected\".",
+    "screenshotFile" : "C:\\Users\\User\\Downloads\\mobile-a11y-poc\\atf-results\\atf-scan-big4-20260907_152522-shots\\shots\\issue-0010.png",
+    "element" : {
+      "className" : "android.view.View",
+      "resourceName" : "addressChangeBtn",
+      "contentDescription" : "tooltipContainer\nSelected Location - Vishweshwarapura, Basavanagudi, Bengaluru - 560004",
+      "text" : "",
+      "clickable" : true,
+      "enabled" : true,
+      "left" : 34,
+      "top" : 148,
+      "right" : 934,
+      "bottom" : 207
+    }
+  }, {
+    "checkClass" : "ImageContrastCheck",
+    "checkOriginalClass" : "com.google.android.apps.common.testing.accessibility.framework.checks.ImageContrastCheck",
+    "type" : "WARNING",
+    "resultId" : 5,
+    "message" : "The image's contrast ratio is 2.32. This ratio is based on an estimated foreground color of #9A9088 and an estimated background color of #EADCCC. Consider increasing this ratio to 3.00 or greater.",
+    "screenshotFile" : "C:\\Users\\User\\Downloads\\mobile-a11y-poc\\atf-results\\atf-scan-big4-20260907_152522-shots\\shots\\issue-0006.png",
+    "element" : {
+      "className" : "android.widget.ImageView",
+      "resourceName" : "wishlist",
+      "contentDescription" : "",
+      "text" : "",
+      "clickable" : true,
+      "enabled" : true,
+      "left" : 284,
+      "top" : 1400,
+      "right" : 374,
+      "bottom" : 1490
+    }
+  }, {
+    "checkClass" : "ImageContrastCheck",
+    "checkOriginalClass" : "com.google.android.apps.common.testing.accessibility.framework.checks.ImageContrastCheck",
+    "type" : "WARNING",
+    "resultId" : 5,
+    "message" : "The image's contrast ratio is 2.44. This ratio is based on an estimated foreground color of #948B82 and an estimated background color of #E7DACC. Consider increasing this ratio to 3.00 or greater.",
+    "screenshotFile" : "C:\\Users\\User\\Downloads\\mobile-a11y-poc\\atf-results\\atf-scan-big4-20260907_152522-shots\\shots\\issue-0008.png",
+    "element" : {
+      "className" : "android.widget.ImageView",
+      "resourceName" : "wishlist",
+      "contentDescription" : "",
+      "text" : "",
+      "clickable" : true,
+      "enabled" : true,
+      "left" : 668,
+      "top" : 1400,
+      "right" : 758,
+      "bottom" : 1490
+    }
+  }, {
+    "checkClass" : "UnexposedTextCheck",
+    "checkOriginalClass" : "com.google.android.apps.common.testing.accessibility.framework.checks.UnexposedTextCheck",
+    "type" : "INFO",
+    "resultId" : 8,
+    "message" : "Ensure this item's accessibility label includes its visible text.",
+    "screenshotFile" : null,
+    "element" : {
+      "className" : "android.view.View",
+      "resourceName" : "searchBox",
+      "contentDescription" : "Search 20000+ products\nSearch \n'chocolates'",
+      "text" : "",
+      "clickable" : true,
+      "enabled" : true,
+      "left" : 146,
+      "top" : 229,
+      "right" : 672,
+      "bottom" : 364
+    }
+  }, {
+    "checkClass" : "UnexposedTextCheck",
+    "checkOriginalClass" : "com.google.android.apps.common.testing.accessibility.framework.checks.UnexposedTextCheck",
+    "type" : "INFO",
+    "resultId" : 8,
+    "message" : "Ensure this item's accessibility label includes its visible text.",
+    "screenshotFile" : "C:\\Users\\User\\Downloads\\mobile-a11y-poc\\atf-results\\atf-scan-big4-20260907_152522-shots\\shots\\issue-0029.png",
+    "element" : {
+      "className" : "android.view.View",
+      "resourceName" : "lobItems",
+      "contentDescription" : "Ganeshotsav",
+      "text" : "",
+      "clickable" : true,
+      "enabled" : true,
+      "left" : 420,
+      "top" : 364,
+      "right" : 630,
+      "bottom" : 544
+    }
+  }, {
+    "checkClass" : "UnexposedTextCheck",
+    "checkOriginalClass" : "com.google.android.apps.common.testing.accessibility.framework.checks.UnexposedTextCheck",
+    "type" : "INFO",
+    "resultId" : 8,
+    "message" : "Ensure this item's accessibility label includes its visible text.",
+    "screenshotFile" : "C:\\Users\\User\\Downloads\\mobile-a11y-poc\\atf-results\\atf-scan-big4-20260907_152522-shots\\shots\\issue-0030.png",
+    "element" : {
+      "className" : "android.view.View",
+      "resourceName" : "",
+      "contentDescription" : "₹21",
+      "text" : "",
+      "clickable" : false,
+      "enabled" : true,
+      "left" : 59,
+      "top" : 1827,
+      "right" : 121,
+      "bottom" : 1875
+    }
+  }, {
+    "checkClass" : "UnexposedTextCheck",
+    "checkOriginalClass" : "com.google.android.apps.common.testing.accessibility.framework.checks.UnexposedTextCheck",
+    "type" : "INFO",
+    "resultId" : 8,
+    "message" : "Ensure this item's accessibility label includes its visible text.",
+    "screenshotFile" : "C:\\Users\\User\\Downloads\\mobile-a11y-poc\\atf-results\\atf-scan-big4-20260907_152522-shots\\shots\\issue-0031.png",
+    "element" : {
+      "className" : "android.view.View",
+      "resourceName" : "",
+      "contentDescription" : "₹63.75",
+      "text" : "",
+      "clickable" : false,
+      "enabled" : true,
+      "left" : 518,
+      "top" : 1836,
+      "right" : 595,
+      "bottom" : 1867
+    }
+  }, {
+    "checkClass" : "UnexposedTextCheck",
+    "checkOriginalClass" : "com.google.android.apps.common.testing.accessibility.framework.checks.UnexposedTextCheck",
+    "type" : "INFO",
+    "resultId" : 8,
+    "message" : "Ensure this item's accessibility label includes its visible text.",
+    "screenshotFile" : "C:\\Users\\User\\Downloads\\mobile-a11y-poc\\atf-results\\atf-scan-big4-20260907_152522-shots\\shots\\issue-0032.png",
+    "element" : {
+      "className" : "android.view.View",
+      "resourceName" : "",
+      "contentDescription" : "₹46.25",
+      "text" : "",
+      "clickable" : false,
+      "enabled" : true,
+      "left" : 902,
+      "top" : 1836,
+      "right" : 982,
+      "bottom" : 1867
+    }
+  }, {
+    "checkClass" : "UnexposedTextCheck",
+    "checkOriginalClass" : "com.google.android.apps.common.testing.accessibility.framework.checks.UnexposedTextCheck",
+    "type" : "INFO",
+    "resultId" : 8,
+    "message" : "Ensure this item's accessibility label includes its visible text.",
+    "screenshotFile" : "C:\\Users\\User\\Downloads\\mobile-a11y-poc\\atf-results\\atf-scan-big4-20260907_152522-shots\\shots\\issue-0033.png",
+    "element" : {
+      "className" : "android.view.View",
+      "resourceName" : "",
+      "contentDescription" : "Local Tomato",
+      "text" : "",
+      "clickable" : false,
+      "enabled" : true,
+      "left" : 827,
+      "top" : 1987,
+      "right" : 1080,
+      "bottom" : 2030
+    }
+  } ]
+}

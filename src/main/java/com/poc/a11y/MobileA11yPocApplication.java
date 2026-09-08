@@ -1,0 +1,11 @@
+package com.poc.a11y;
+
+import org.springframework.boot.SpringApplication;
+import org.springframework.boot.autoconfigure.SpringBootApplication;
+
+@SpringBootApplication
+public class MobileA11yPocApplication {
+    public static void main(String[] args) {
+        SpringApplication.run(MobileA11yPocApplication.class, args);
+    }
+}

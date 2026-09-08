@@ -1,0 +1,47 @@
+plugins {
+    id 'com.android.application'
+}
+
+android {
+    namespace 'com.poc.a11y.atf.harness'
+    compileSdk 34
+
+    defaultConfig {
+        // This APK is never launched by a user - it only exists so the
+        // androidTest APK below has something to instrument against.
+        applicationId "com.poc.a11y.atf.harness"
+        minSdk 26
+        targetSdk 34
+        versionCode 1
+        versionName "1.0"
+
+        // Real device serial/app-under-test is chosen at scan time by the
+        // Spring Boot side (AtfHarnessRunner), not baked in here.
+        testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
+    }
+
+    buildTypes {
+        release {
+            minifyEnabled false
+        }
+    }
+
+    compileOptions {
+        sourceCompatibility JavaVersion.VERSION_11
+        targetCompatibility JavaVersion.VERSION_11
+    }
+}
+
+dependencies {
+    androidTestImplementation 'androidx.test:runner:1.6.1'
+    androidTestImplementation 'androidx.test.ext:junit:1.2.1'
+
+    // Google Accessibility Test Framework
+    androidTestImplementation 'com.google.android.apps.common.testing.accessibility.framework:accessibility-test-framework:4.1.1'
+    // Google ML Kit - OCR
+    implementation 'com.google.mlkit:text-recognition:16.0.1'
+
+    // Required by ATF test code
+    androidTestImplementation 'com.google.guava:guava:33.3.1-android'
+    androidTestImplementation 'org.checkerframework:checker-qual:3.48.3'
+}
