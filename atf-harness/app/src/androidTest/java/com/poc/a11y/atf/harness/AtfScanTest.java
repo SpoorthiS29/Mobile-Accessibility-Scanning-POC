@@ -54,11 +54,17 @@ import java.util.Set;
  * identity (resource / label when present; quantized position for unlabeled
  * siblings) so the same widget is not reported twice after a swipe. Sticky
  * chrome that repaints with a slightly different label is also collapsed by
- * bounds overlap. Clipped / zero-area nodes, edge slivers, and nested web-card
- * wrappers are dropped so product tiles do not produce look-alike findings.
+ * bounds overlap. Clipped / zero-area nodes and edge slivers are dropped.
+ * A parent card and the distinct widgets inside it (image, title, price)
+ * stay as separate issues; only near-identical bounds of the same check
+ * are treated as the same widget.
  * Crops include surrounding context plus a red highlight on the failing widget,
  * positioned from bounds sampled next to the screenshot rather than from the
  * ATF snapshot, because Amazon's web feed repaints while the checks run.
+ *
+ * <p>This class does not launch the app under test. The Spring Boot / Appium
+ * side must already have the target UI in the foreground (physical USB device
+ * or Sauce Labs virtual device) before {@code am instrument} starts.
  */
 @RunWith(AndroidJUnit4.class)
 public class AtfScanTest {
@@ -93,7 +99,10 @@ public class AtfScanTest {
     /** Edge-hugging strips narrower than this are carousel leftovers, not real widgets. */
     private static final int EDGE_SLIVER_PX = 80;
 
-    /** Shared speakable prefix that treats nested card / title nodes as the same tile. */
+    /**
+     * Shared speakable prefix used only when two findings already have
+     * nearly the same bounds (same widget, not a parent card vs a child).
+     */
     private static final int NESTED_LABEL_PREFIX_MIN = 24;
 
     /** Matched pairs below this delta are treated as sticky chrome, not scroll. */
@@ -620,9 +629,9 @@ public class AtfScanTest {
     }
 
     /**
-     * Drops the outer wrapper when a later (or already-kept) finding is the
-     * same check on a nested node with a similar speakable label — Amazon
-     * product cards expose the tile and the title/price as two clickable Views.
+     * Collapses two findings of the same check only when they cover essentially
+     * the same widget (high bounds overlap + similar label). A parent card and
+     * the distinct children inside it (image, title, price) are kept separately.
      */
     private List<AtfIssueRecord> dropNestedDuplicates(List<AtfIssueRecord> incoming,
                                                       List<AtfIssueRecord> alreadyKept) {
@@ -670,7 +679,21 @@ public class AtfScanTest {
         if (elA == null || elB == null) {
             return false;
         }
-        return boundsNest(elA, elB) && similarSpeakable(elA, elB);
+        // Containment alone is not a duplicate: a product card that wraps
+        // an image, title, and price must keep each ATF finding. Collapse
+        // only when the two rects are essentially the same widget.
+        return nearlySameBounds(elA, elB) && similarSpeakable(elA, elB);
+    }
+
+    private boolean nearlySameBounds(ViewHierarchyElement a, ViewHierarchyElement b) {
+        var ba = a.getBoundsInScreen();
+        var bb = b.getBoundsInScreen();
+        if (ba == null || bb == null) {
+            return false;
+        }
+        return highOverlap(
+                ba.getLeft(), ba.getTop(), ba.getRight(), ba.getBottom(),
+                bb.getLeft(), bb.getTop(), bb.getRight(), bb.getBottom());
     }
 
     private boolean sameFindingType(AtfIssueRecord a, AtfIssueRecord b) {
@@ -733,30 +756,6 @@ public class AtfScanTest {
         return width * height;
     }
 
-    private boolean boundsNest(ViewHierarchyElement a, ViewHierarchyElement b) {
-        var ba = a.getBoundsInScreen();
-        var bb = b.getBoundsInScreen();
-        if (ba == null || bb == null) {
-            return false;
-        }
-        int aL = ba.getLeft();
-        int aT = ba.getTop();
-        int aR = ba.getRight();
-        int aB = ba.getBottom();
-        int bL = bb.getLeft();
-        int bT = bb.getTop();
-        int bR = bb.getRight();
-        int bB = bb.getBottom();
-        return containsRect(aL, aT, aR, aB, bL, bT, bR, bB)
-                || containsRect(bL, bT, bR, bB, aL, aT, aR, aB)
-                || highOverlap(aL, aT, aR, aB, bL, bT, bR, bB);
-    }
-
-    private static boolean containsRect(int oL, int oT, int oR, int oB,
-                                        int iL, int iT, int iR, int iB) {
-        return oL <= iL && oT <= iT && oR >= iR && oB >= iB;
-    }
-
     private static boolean highOverlap(int aL, int aT, int aR, int aB,
                                        int bL, int bT, int bR, int bB) {
         int left = Math.max(aL, bL);
@@ -774,9 +773,9 @@ public class AtfScanTest {
         String sa = speakable(a).toLowerCase(Locale.US);
         String sb = speakable(b).toLowerCase(Locale.US);
         // Do not treat two unlabeled nodes as "similar" — that collapsed distinct
-        // QTalk icons that Accessibility Scanner reports separately. Nested
-        // unlabeled wrappers are still handled only when both labels are empty
-        // and bounds clearly nest (caller already requires boundsNest).
+        // QTalk icons that Accessibility Scanner reports separately. Unlabeled
+        // wrappers are only collapsed when both labels are empty and the
+        // caller already requires nearly-identical bounds.
         if (sa.isEmpty() && sb.isEmpty()) {
             return true;
         }

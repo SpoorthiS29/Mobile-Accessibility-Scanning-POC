@@ -6,12 +6,14 @@ com\poc\a11y\atf\AppiumDriverManager$1.class
 com\poc\a11y\checks\UnlabeledEditableFieldCheck.class
 com\poc\a11y\atf\AdbCommandExecutor$Result.class
 com\poc\a11y\atf\AdbCommandExecutor.class
+com\poc\a11y\atf\dto\WcagMapping.class
 com\poc\a11y\atf\AtfScanController.class
 com\poc\a11y\atf\AtfHarnessRunner.class
 com\poc\a11y\atf\dto\AtfCheckResultDto.class
 com\poc\a11y\model\ScanResult.class
 com\poc\a11y\service\MobileScanEngine.class
 com\poc\a11y\model\ScanRequest.class
+com\poc\a11y\atf\dto\AtfElementOutputDto.class
 com\poc\a11y\controller\GlobalExceptionHandler.class
 com\poc\a11y\model\UiElement.class
 com\poc\a11y\atf\AtfResultMapper.class
@@ -20,10 +22,10 @@ com\poc\a11y\atf\dto\AtfElementDto.class
 com\poc\a11y\controller\ScanController.class
 com\poc\a11y\checks\AccessibilityCheck.class
 com\poc\a11y\service\AppiumSessionManager.class
-com\poc\a11y\checks\TouchTargetSizeCheck.class
 com\poc\a11y\atf\AppiumDriverManager.class
 com\poc\a11y\atf\dto\AtfScanOutputDto.class
 com\poc\a11y\atf\AtfProperties.class
+com\poc\a11y\atf\SauceLabsClient.class
 com\poc\a11y\model\Severity.class
 com\poc\a11y\checks\MissingContentDescCheck.class
 com\poc\a11y\MobileA11yPocApplication.class

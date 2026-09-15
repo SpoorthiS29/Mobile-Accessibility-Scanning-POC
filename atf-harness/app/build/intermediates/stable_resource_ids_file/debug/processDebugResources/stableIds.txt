@@ -1,3 +1,4 @@
+com.poc.a11y.atf.harness:xml/atf_accessibility_service = 0x7f0f0000
 com.poc.a11y.atf.harness:styleable/TextAppearance = 0x7f0e002c
 com.poc.a11y.atf.harness:styleable/StateListDrawable = 0x7f0e0029
 com.poc.a11y.atf.harness:styleable/PopupWindow = 0x7f0e0023

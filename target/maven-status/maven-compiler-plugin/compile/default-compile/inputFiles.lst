@@ -1,4 +1,5 @@
 C:\Users\User\Downloads\mobile-a11y-poc\src\main\java\com\poc\a11y\atf\AdbCommandExecutor.java
+C:\Users\User\Downloads\mobile-a11y-poc\src\main\java\com\poc\a11y\atf\ApkManifestReader.java
 C:\Users\User\Downloads\mobile-a11y-poc\src\main\java\com\poc\a11y\atf\AppiumDriverManager.java
 C:\Users\User\Downloads\mobile-a11y-poc\src\main\java\com\poc\a11y\atf\AtfHarnessRunner.java
 C:\Users\User\Downloads\mobile-a11y-poc\src\main\java\com\poc\a11y\atf\AtfMobileScanService.java
@@ -7,7 +8,11 @@ C:\Users\User\Downloads\mobile-a11y-poc\src\main\java\com\poc\a11y\atf\AtfResult
 C:\Users\User\Downloads\mobile-a11y-poc\src\main\java\com\poc\a11y\atf\AtfScanController.java
 C:\Users\User\Downloads\mobile-a11y-poc\src\main\java\com\poc\a11y\atf\dto\AtfCheckResultDto.java
 C:\Users\User\Downloads\mobile-a11y-poc\src\main\java\com\poc\a11y\atf\dto\AtfElementDto.java
+C:\Users\User\Downloads\mobile-a11y-poc\src\main\java\com\poc\a11y\atf\dto\AtfElementOutputDto.java
 C:\Users\User\Downloads\mobile-a11y-poc\src\main\java\com\poc\a11y\atf\dto\AtfScanOutputDto.java
+C:\Users\User\Downloads\mobile-a11y-poc\src\main\java\com\poc\a11y\atf\dto\WcagMapping.java
+C:\Users\User\Downloads\mobile-a11y-poc\src\main\java\com\poc\a11y\atf\PackageIdentity.java
+C:\Users\User\Downloads\mobile-a11y-poc\src\main\java\com\poc\a11y\atf\SauceLabsClient.java
 C:\Users\User\Downloads\mobile-a11y-poc\src\main\java\com\poc\a11y\checks\AccessibilityCheck.java
 C:\Users\User\Downloads\mobile-a11y-poc\src\main\java\com\poc\a11y\checks\DuplicateLabelCheck.java
 C:\Users\User\Downloads\mobile-a11y-poc\src\main\java\com\poc\a11y\checks\MissingContentDescCheck.java

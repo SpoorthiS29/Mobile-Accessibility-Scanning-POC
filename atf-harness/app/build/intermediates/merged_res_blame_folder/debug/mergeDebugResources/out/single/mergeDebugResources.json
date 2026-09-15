@@ -1,0 +1,6 @@
+[
+    {
+        "merged": "com.poc.a11y.atf.harness.app-debug-21:/xml_atf_accessibility_service.xml.flat",
+        "source": "com.poc.a11y.atf.harness.app-main-23:/xml/atf_accessibility_service.xml"
+    }
+]

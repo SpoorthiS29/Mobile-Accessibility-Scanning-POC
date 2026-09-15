@@ -11,9 +11,17 @@ import org.springframework.web.bind.annotation.RestController;
     /**
      * Real-ATF scan of the current screen. Pass {@code "scroll": true} to
      * scroll and scan successive viewports; otherwise only the current
-     * viewport is scanned. If {@code existingDriver} or {@code appiumSessionId}
-     * is set, the app is not launched. Otherwise Appium opens it once (POC).
-     * The Appium session is quit before ATF; the app is left running.
+     * viewport is scanned.
+     * <p>
+     * Physical device ({@code virtualDevice} omitted/false): if
+     * {@code existingDriver} or {@code appiumSessionId} is set, the app is not
+     * launched. Otherwise Appium opens it once. The Appium session is quit
+     * before ATF; the app is left running.
+     * <p>
+     * Sauce Labs virtual device ({@code virtualDevice: true}): credentials and
+     * {@code appPath} come from the payload. Appium installs and launches the
+     * app under test first; the ATF harness then only scans, scrolls, and
+     * writes issues + screenshots.
      */
 @RestController
 @RequestMapping("/api/scan")

@@ -15,7 +15,7 @@ public class ScanRequest {
     private String appPath;
 
     @NotBlank
-    private String platformName = "Android";
+    private String platformName = "ANDROID";
 
     private String automationName = "UiAutomator2";
 
@@ -64,6 +64,20 @@ public class ScanRequest {
 
     /** When true, force-stop the app after the ATF scan. Default leaves it open. */
     private boolean closeApp = false;
+
+    /**
+     * When true, use a Sauce Labs Android emulator: install the APK at
+     * {@link #appPath}, launch it via Appium, then run the ATF harness.
+     * Physical USB devices leave this false / omitted.
+     */
+    private boolean virtualDevice = false;
+
+    private String sauceUsername;
+    private String sauceAccessKey;
+    /** Sauce data-center region, e.g. {@code us-west-1}, {@code eu-central-1}, {@code us-east-4}. */
+    private String sauceRegion = "eu-central-1";
+    /** Required for Sauce virtual devices (emulator OS version), e.g. {@code 14.0}. */
+    private String platformVersion;
 
     public boolean hasExistingDriver() {
         return existingDriver != null
@@ -123,4 +137,19 @@ public class ScanRequest {
 
     public boolean isCloseApp() { return closeApp; }
     public void setCloseApp(boolean closeApp) { this.closeApp = closeApp; }
+
+    public boolean isVirtualDevice() { return virtualDevice; }
+    public void setVirtualDevice(boolean virtualDevice) { this.virtualDevice = virtualDevice; }
+
+    public String getSauceUsername() { return sauceUsername; }
+    public void setSauceUsername(String sauceUsername) { this.sauceUsername = sauceUsername; }
+
+    public String getSauceAccessKey() { return sauceAccessKey; }
+    public void setSauceAccessKey(String sauceAccessKey) { this.sauceAccessKey = sauceAccessKey; }
+
+    public String getSauceRegion() { return sauceRegion; }
+    public void setSauceRegion(String sauceRegion) { this.sauceRegion = sauceRegion; }
+
+    public String getPlatformVersion() { return platformVersion; }
+    public void setPlatformVersion(String platformVersion) { this.platformVersion = platformVersion; }
 }

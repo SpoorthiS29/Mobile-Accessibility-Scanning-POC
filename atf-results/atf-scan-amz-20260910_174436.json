@@ -1,0 +1,310 @@
+{
+  "density" : 2.8125,
+  "resultCount" : 16,
+  "viewportCount" : 1,
+  "results" : [ {
+    "checkClass" : "SpeakableTextPresentCheck",
+    "checkOriginalClass" : "com.google.android.apps.common.testing.accessibility.framework.checks.SpeakableTextPresentCheck",
+    "type" : "ERROR",
+    "resultId" : 4,
+    "message" : "This item may not have a label readable by screen readers.",
+    "screenshotFile" : "C:\\Users\\User\\Downloads\\mobile-a11y-poc\\atf-results\\atf-scan-amz-20260910_174436-shots\\shots\\issue-0001.png",
+    "element" : {
+      "className" : "android.view.ViewGroup",
+      "resourceName" : "",
+      "contentDescription" : "",
+      "text" : "",
+      "clickable" : true,
+      "enabled" : true,
+      "left" : 45,
+      "top" : 719,
+      "right" : 1035,
+      "bottom" : 1201
+    }
+  }, {
+    "checkClass" : "SpeakableTextPresentCheck",
+    "checkOriginalClass" : "com.google.android.apps.common.testing.accessibility.framework.checks.SpeakableTextPresentCheck",
+    "type" : "ERROR",
+    "resultId" : 4,
+    "message" : "This item may not have a label readable by screen readers.",
+    "screenshotFile" : "C:\\Users\\User\\Downloads\\mobile-a11y-poc\\atf-results\\atf-scan-amz-20260910_174436-shots\\shots\\issue-0002.png",
+    "element" : {
+      "className" : "android.view.ViewGroup",
+      "resourceName" : "",
+      "contentDescription" : "",
+      "text" : "",
+      "clickable" : true,
+      "enabled" : true,
+      "left" : 878,
+      "top" : 1348,
+      "right" : 990,
+      "bottom" : 1416
+    }
+  }, {
+    "checkClass" : "SpeakableTextPresentCheck",
+    "checkOriginalClass" : "com.google.android.apps.common.testing.accessibility.framework.checks.SpeakableTextPresentCheck",
+    "type" : "ERROR",
+    "resultId" : 4,
+    "message" : "This item may not have a label readable by screen readers.",
+    "screenshotFile" : "C:\\Users\\User\\Downloads\\mobile-a11y-poc\\atf-results\\atf-scan-amz-20260910_174436-shots\\shots\\issue-0003.png",
+    "element" : {
+      "className" : "android.view.ViewGroup",
+      "resourceName" : "",
+      "contentDescription" : "",
+      "text" : "",
+      "clickable" : true,
+      "enabled" : true,
+      "left" : 557,
+      "top" : 83,
+      "right" : 1035,
+      "bottom" : 207
+    }
+  }, {
+    "checkClass" : "SpeakableTextPresentCheck",
+    "checkOriginalClass" : "com.google.android.apps.common.testing.accessibility.framework.checks.SpeakableTextPresentCheck",
+    "type" : "ERROR",
+    "resultId" : 4,
+    "message" : "This item may not have a label readable by screen readers.",
+    "screenshotFile" : "C:\\Users\\User\\Downloads\\mobile-a11y-poc\\atf-results\\atf-scan-amz-20260910_174436-shots\\shots\\issue-0004.png",
+    "element" : {
+      "className" : "android.view.ViewGroup",
+      "resourceName" : "",
+      "contentDescription" : "",
+      "text" : "",
+      "clickable" : true,
+      "enabled" : true,
+      "left" : 783,
+      "top" : 348,
+      "right" : 896,
+      "bottom" : 483
+    }
+  }, {
+    "checkClass" : "SpeakableTextPresentCheck",
+    "checkOriginalClass" : "com.google.android.apps.common.testing.accessibility.framework.checks.SpeakableTextPresentCheck",
+    "type" : "ERROR",
+    "resultId" : 4,
+    "message" : "This item may not have a label readable by screen readers.",
+    "screenshotFile" : "C:\\Users\\User\\Downloads\\mobile-a11y-poc\\atf-results\\atf-scan-amz-20260910_174436-shots\\shots\\issue-0005.png",
+    "element" : {
+      "className" : "android.view.ViewGroup",
+      "resourceName" : "",
+      "contentDescription" : "",
+      "text" : "",
+      "clickable" : true,
+      "enabled" : true,
+      "left" : 945,
+      "top" : 348,
+      "right" : 1035,
+      "bottom" : 483
+    }
+  }, {
+    "checkClass" : "TouchTargetSizeCheck",
+    "checkOriginalClass" : "com.google.android.apps.common.testing.accessibility.framework.checks.TouchTargetSizeCheck",
+    "type" : "ERROR",
+    "resultId" : 3,
+    "message" : "This item's size is 40dp x 24dp. Consider making this touch target 48dp wide and 48dp high or larger.",
+    "screenshotFile" : "C:\\Users\\User\\Downloads\\mobile-a11y-poc\\atf-results\\atf-scan-amz-20260910_174436-shots\\shots\\issue-0002.png",
+    "element" : {
+      "className" : "android.view.ViewGroup",
+      "resourceName" : "",
+      "contentDescription" : "",
+      "text" : "",
+      "clickable" : true,
+      "enabled" : true,
+      "left" : 878,
+      "top" : 1348,
+      "right" : 990,
+      "bottom" : 1416
+    }
+  }, {
+    "checkClass" : "TouchTargetSizeCheck",
+    "checkOriginalClass" : "com.google.android.apps.common.testing.accessibility.framework.checks.TouchTargetSizeCheck",
+    "type" : "ERROR",
+    "resultId" : 4,
+    "message" : "This item's height is 44dp. Consider making the height of this touch target 48dp or larger.",
+    "screenshotFile" : "C:\\Users\\User\\Downloads\\mobile-a11y-poc\\atf-results\\atf-scan-amz-20260910_174436-shots\\shots\\issue-0003.png",
+    "element" : {
+      "className" : "android.view.ViewGroup",
+      "resourceName" : "",
+      "contentDescription" : "",
+      "text" : "",
+      "clickable" : true,
+      "enabled" : true,
+      "left" : 557,
+      "top" : 83,
+      "right" : 1035,
+      "bottom" : 207
+    }
+  }, {
+    "checkClass" : "TouchTargetSizeCheck",
+    "checkOriginalClass" : "com.google.android.apps.common.testing.accessibility.framework.checks.TouchTargetSizeCheck",
+    "type" : "ERROR",
+    "resultId" : 4,
+    "message" : "This item's height is 28dp. Consider making the height of this touch target 48dp or larger.",
+    "screenshotFile" : "C:\\Users\\User\\Downloads\\mobile-a11y-poc\\atf-results\\atf-scan-amz-20260910_174436-shots\\shots\\issue-0006.png",
+    "element" : {
+      "className" : "android.view.ViewGroup",
+      "resourceName" : "",
+      "contentDescription" : "No location, Add address",
+      "text" : "",
+      "clickable" : true,
+      "enabled" : true,
+      "left" : 45,
+      "top" : 235,
+      "right" : 1035,
+      "bottom" : 314
+    }
+  }, {
+    "checkClass" : "TouchTargetSizeCheck",
+    "checkOriginalClass" : "com.google.android.apps.common.testing.accessibility.framework.checks.TouchTargetSizeCheck",
+    "type" : "ERROR",
+    "resultId" : 4,
+    "message" : "This item's height is 18dp. Consider making the height of this touch target 48dp or larger.",
+    "screenshotFile" : null,
+    "element" : {
+      "className" : "android.view.ViewGroup",
+      "resourceName" : "",
+      "contentDescription" : "shoes",
+      "text" : "",
+      "clickable" : true,
+      "enabled" : true,
+      "left" : 174,
+      "top" : 390,
+      "right" : 778,
+      "bottom" : 441
+    }
+  }, {
+    "checkClass" : "TouchTargetSizeCheck",
+    "checkOriginalClass" : "com.google.android.apps.common.testing.accessibility.framework.checks.TouchTargetSizeCheck",
+    "type" : "ERROR",
+    "resultId" : 5,
+    "message" : "This item's width is 40dp. Consider making the width of this touch target 48dp or larger.",
+    "screenshotFile" : "C:\\Users\\User\\Downloads\\mobile-a11y-poc\\atf-results\\atf-scan-amz-20260910_174436-shots\\shots\\issue-0004.png",
+    "element" : {
+      "className" : "android.view.ViewGroup",
+      "resourceName" : "",
+      "contentDescription" : "",
+      "text" : "",
+      "clickable" : true,
+      "enabled" : true,
+      "left" : 783,
+      "top" : 348,
+      "right" : 896,
+      "bottom" : 483
+    }
+  }, {
+    "checkClass" : "TouchTargetSizeCheck",
+    "checkOriginalClass" : "com.google.android.apps.common.testing.accessibility.framework.checks.TouchTargetSizeCheck",
+    "type" : "ERROR",
+    "resultId" : 5,
+    "message" : "This item's width is 32dp. Consider making the width of this touch target 48dp or larger.",
+    "screenshotFile" : "C:\\Users\\User\\Downloads\\mobile-a11y-poc\\atf-results\\atf-scan-amz-20260910_174436-shots\\shots\\issue-0005.png",
+    "element" : {
+      "className" : "android.view.ViewGroup",
+      "resourceName" : "",
+      "contentDescription" : "",
+      "text" : "",
+      "clickable" : true,
+      "enabled" : true,
+      "left" : 945,
+      "top" : 348,
+      "right" : 1035,
+      "bottom" : 483
+    }
+  }, {
+    "checkClass" : "DuplicateSpeakableTextCheck",
+    "checkOriginalClass" : "com.google.android.apps.common.testing.accessibility.framework.checks.DuplicateSpeakableTextCheck",
+    "type" : "WARNING",
+    "resultId" : 1,
+    "message" : "This clickable item's speakable text: \"Home\" is identical to that of 1 other item(s).",
+    "screenshotFile" : "C:\\Users\\User\\Downloads\\mobile-a11y-poc\\atf-results\\atf-scan-amz-20260910_174436-shots\\shots\\issue-0007.png",
+    "element" : {
+      "className" : "android.view.ViewGroup",
+      "resourceName" : "",
+      "contentDescription" : "Home",
+      "text" : "",
+      "clickable" : true,
+      "enabled" : true,
+      "left" : 976,
+      "top" : 511,
+      "right" : 1080,
+      "bottom" : 679
+    }
+  }, {
+    "checkClass" : "TextContrastCheck",
+    "checkOriginalClass" : "com.google.android.apps.common.testing.accessibility.framework.checks.TextContrastCheck",
+    "type" : "WARNING",
+    "resultId" : 11,
+    "message" : "The item's text contrast ratio is 1.84. This ratio is based on an estimated foreground color of #B8B7B5 and an estimated background color of #F5F5F5. Consider increasing this item's text contrast ratio to 4.50 or greater. This item may be obscured by other on-screen content. Consider manually testing this item's contrast.",
+    "screenshotFile" : "C:\\Users\\User\\Downloads\\mobile-a11y-poc\\atf-results\\atf-scan-amz-20260910_174436-shots\\shots\\issue-0008.png",
+    "element" : {
+      "className" : "android.widget.TextView",
+      "resourceName" : "",
+      "contentDescription" : "",
+      "text" : "     ",
+      "clickable" : false,
+      "enabled" : true,
+      "left" : 102,
+      "top" : 1473,
+      "right" : 530,
+      "bottom" : 1527
+    }
+  }, {
+    "checkClass" : "TextContrastCheck",
+    "checkOriginalClass" : "com.google.android.apps.common.testing.accessibility.framework.checks.TextContrastCheck",
+    "type" : "WARNING",
+    "resultId" : 11,
+    "message" : "The item's text contrast ratio is 1.09. This ratio is based on an estimated foreground color of #FFFFFF and an estimated background color of #F5F5F5. Consider increasing this item's text contrast ratio to 4.50 or greater. This item may be obscured by other on-screen content. Consider manually testing this item's contrast.",
+    "screenshotFile" : "C:\\Users\\User\\Downloads\\mobile-a11y-poc\\atf-results\\atf-scan-amz-20260910_174436-shots\\shots\\issue-0009.png",
+    "element" : {
+      "className" : "android.widget.TextView",
+      "resourceName" : "",
+      "contentDescription" : "",
+      "text" : "     ",
+      "clickable" : false,
+      "enabled" : true,
+      "left" : 552,
+      "top" : 1473,
+      "right" : 980,
+      "bottom" : 1527
+    }
+  }, {
+    "checkClass" : "ImageContrastCheck",
+    "checkOriginalClass" : "com.google.android.apps.common.testing.accessibility.framework.checks.ImageContrastCheck",
+    "type" : "WARNING",
+    "resultId" : 5,
+    "message" : "The image's contrast ratio is 2.20. This ratio is based on an estimated foreground color of #FE9176 and an estimated background color of #FFFFFF. Consider increasing this ratio to 3.00 or greater. This item may be obscured by other on-screen content. Consider manually testing this item's contrast.",
+    "screenshotFile" : "C:\\Users\\User\\Downloads\\mobile-a11y-poc\\atf-results\\atf-scan-amz-20260910_174436-shots\\shots\\issue-0010.png",
+    "element" : {
+      "className" : "android.widget.ImageView",
+      "resourceName" : "",
+      "contentDescription" : "",
+      "text" : "",
+      "clickable" : false,
+      "enabled" : true,
+      "left" : 698,
+      "top" : 111,
+      "right" : 781,
+      "bottom" : 173
+    }
+  }, {
+    "checkClass" : "UnexposedTextCheck",
+    "checkOriginalClass" : "com.google.android.apps.common.testing.accessibility.framework.checks.UnexposedTextCheck",
+    "type" : "INFO",
+    "resultId" : 8,
+    "message" : "Ensure this item's accessibility label includes its visible text.",
+    "screenshotFile" : "C:\\Users\\User\\Downloads\\mobile-a11y-poc\\atf-results\\atf-scan-amz-20260910_174436-shots\\shots\\issue-0011.png",
+    "element" : {
+      "className" : "android.view.ViewGroup",
+      "resourceName" : "",
+      "contentDescription" : "Categories",
+      "text" : "",
+      "clickable" : true,
+      "enabled" : true,
+      "left" : 433,
+      "top" : 2093,
+      "right" : 647,
+      "bottom" : 2273
+    }
+  } ]
+}

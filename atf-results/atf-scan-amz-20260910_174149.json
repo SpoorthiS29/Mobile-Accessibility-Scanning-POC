@@ -1,0 +1,291 @@
+{
+  "density" : 2.8125,
+  "resultCount" : 15,
+  "viewportCount" : 1,
+  "results" : [ {
+    "checkClass" : "TouchTargetSizeCheck",
+    "checkOriginalClass" : "com.google.android.apps.common.testing.accessibility.framework.checks.TouchTargetSizeCheck",
+    "type" : "WARNING",
+    "resultId" : 3,
+    "message" : "This item's size is 31dp x 31dp. Consider making this touch target 48dp wide and 48dp high or larger. This item originates from web content, and additional verification of touch target size is recommended.",
+    "screenshotFile" : null,
+    "element" : {
+      "className" : "android.widget.Button",
+      "resourceName" : "",
+      "contentDescription" : "",
+      "text" : "Pause",
+      "clickable" : true,
+      "enabled" : true,
+      "left" : 160,
+      "top" : 1811,
+      "right" : 247,
+      "bottom" : 1898
+    }
+  }, {
+    "checkClass" : "TouchTargetSizeCheck",
+    "checkOriginalClass" : "com.google.android.apps.common.testing.accessibility.framework.checks.TouchTargetSizeCheck",
+    "type" : "WARNING",
+    "resultId" : 3,
+    "message" : "This item's size is 35dp x 41dp. Consider making this touch target 48dp wide and 48dp high or larger. This item originates from web content, and additional verification of touch target size is recommended.",
+    "screenshotFile" : "C:\\Users\\User\\Downloads\\mobile-a11y-poc\\atf-results\\atf-scan-amz-20260910_174149-shots\\shots\\issue-0001.png",
+    "element" : {
+      "className" : "android.view.View",
+      "resourceName" : "",
+      "contentDescription" : "Exclusive offers and faster purchase.Sign in",
+      "text" : "",
+      "clickable" : true,
+      "enabled" : true,
+      "left" : 840,
+      "top" : 1909,
+      "right" : 939,
+      "bottom" : 2025
+    }
+  }, {
+    "checkClass" : "TouchTargetSizeCheck",
+    "checkOriginalClass" : "com.google.android.apps.common.testing.accessibility.framework.checks.TouchTargetSizeCheck",
+    "type" : "WARNING",
+    "resultId" : 5,
+    "message" : "This item's width is 26dp. Consider making the width of this touch target 48dp or larger. This item originates from web content, and additional verification of touch target size is recommended.",
+    "screenshotFile" : "C:\\Users\\User\\Downloads\\mobile-a11y-poc\\atf-results\\atf-scan-amz-20260910_174149-shots\\shots\\issue-0002.png",
+    "element" : {
+      "className" : "android.view.View",
+      "resourceName" : "",
+      "contentDescription" : "",
+      "text" : "",
+      "clickable" : true,
+      "enabled" : true,
+      "left" : 984,
+      "top" : 1873,
+      "right" : 1057,
+      "bottom" : 2064
+    }
+  }, {
+    "checkClass" : "TouchTargetSizeCheck",
+    "checkOriginalClass" : "com.google.android.apps.common.testing.accessibility.framework.checks.TouchTargetSizeCheck",
+    "type" : "WARNING",
+    "resultId" : 3,
+    "message" : "This item's size is 14dp x 21dp. Consider making this touch target 48dp wide and 48dp high or larger. This item originates from web content, and additional verification of touch target size is recommended.",
+    "screenshotFile" : "C:\\Users\\User\\Downloads\\mobile-a11y-poc\\atf-results\\atf-scan-amz-20260910_174149-shots\\shots\\issue-0003.png",
+    "element" : {
+      "className" : "android.widget.Button",
+      "resourceName" : "",
+      "contentDescription" : "close",
+      "text" : "",
+      "clickable" : true,
+      "enabled" : true,
+      "left" : 984,
+      "top" : 1904,
+      "right" : 1023,
+      "bottom" : 1963
+    }
+  }, {
+    "checkClass" : "TouchTargetSizeCheck",
+    "checkOriginalClass" : "com.google.android.apps.common.testing.accessibility.framework.checks.TouchTargetSizeCheck",
+    "type" : "ERROR",
+    "resultId" : 4,
+    "message" : "This item's height is 44dp. Consider making the height of this touch target 48dp or larger.",
+    "screenshotFile" : "C:\\Users\\User\\Downloads\\mobile-a11y-poc\\atf-results\\atf-scan-amz-20260910_174149-shots\\shots\\issue-0004.png",
+    "element" : {
+      "className" : "android.widget.Button",
+      "resourceName" : "in.amazon.mShop.android.shopping:id/glow_subnav_ingress",
+      "contentDescription" : "",
+      "text" : "",
+      "clickable" : true,
+      "enabled" : true,
+      "left" : 28,
+      "top" : 446,
+      "right" : 1052,
+      "bottom" : 570
+    }
+  }, {
+    "checkClass" : "TouchTargetSizeCheck",
+    "checkOriginalClass" : "com.google.android.apps.common.testing.accessibility.framework.checks.TouchTargetSizeCheck",
+    "type" : "WARNING",
+    "resultId" : 3,
+    "message" : "This item's size is 44dp x 44dp. Consider making this touch target 48dp wide and 48dp high or larger. A parent container may be handling touch events for this item. If selecting the larger container performs the same action as selecting this item, consider defining this item as not clickable. If a different action is performed, consider increasing the size of this item.",
+    "screenshotFile" : "C:\\Users\\User\\Downloads\\mobile-a11y-poc\\atf-results\\atf-scan-amz-20260910_174149-shots\\shots\\issue-0005.png",
+    "element" : {
+      "className" : "android.widget.FrameLayout",
+      "resourceName" : "in.amazon.mShop.android.shopping:id/chrome_camera_icon_cxi_inside",
+      "contentDescription" : "scan it",
+      "text" : "",
+      "clickable" : true,
+      "enabled" : true,
+      "left" : 832,
+      "top" : 297,
+      "right" : 956,
+      "bottom" : 421
+    }
+  }, {
+    "checkClass" : "DuplicateSpeakableTextCheck",
+    "checkOriginalClass" : "com.google.android.apps.common.testing.accessibility.framework.checks.DuplicateSpeakableTextCheck",
+    "type" : "WARNING",
+    "resultId" : 1,
+    "message" : "This clickable item's speakable text: \"scan it\" is identical to that of 1 other item(s).",
+    "screenshotFile" : "C:\\Users\\User\\Downloads\\mobile-a11y-poc\\atf-results\\atf-scan-amz-20260910_174149-shots\\shots\\issue-0005.png",
+    "element" : {
+      "className" : "android.widget.FrameLayout",
+      "resourceName" : "in.amazon.mShop.android.shopping:id/chrome_camera_icon_cxi_inside",
+      "contentDescription" : "scan it",
+      "text" : "",
+      "clickable" : true,
+      "enabled" : true,
+      "left" : 832,
+      "top" : 297,
+      "right" : 956,
+      "bottom" : 421
+    }
+  }, {
+    "checkClass" : "ImageContrastCheck",
+    "checkOriginalClass" : "com.google.android.apps.common.testing.accessibility.framework.checks.ImageContrastCheck",
+    "type" : "WARNING",
+    "resultId" : 5,
+    "message" : "The image's contrast ratio is 2.04. This ratio is based on an estimated foreground color of #07C4A9 and an estimated background color of #EDF8F3. Consider increasing this ratio to 3.00 or greater. This item may be obscured by other on-screen content. Consider manually testing this item's contrast. This item may be only partially visible within a scrollable container.",
+    "screenshotFile" : "C:\\Users\\User\\Downloads\\mobile-a11y-poc\\atf-results\\atf-scan-amz-20260910_174149-shots\\shots\\issue-0006.png",
+    "element" : {
+      "className" : "android.widget.ImageView",
+      "resourceName" : "in.amazon.mShop.android.shopping:id/tiles_nav_item_image",
+      "contentDescription" : "",
+      "text" : "",
+      "clickable" : false,
+      "enabled" : true,
+      "left" : 1000,
+      "top" : 102,
+      "right" : 1080,
+      "bottom" : 203
+    }
+  }, {
+    "checkClass" : "TextSizeCheck",
+    "checkOriginalClass" : "com.google.android.apps.common.testing.accessibility.framework.checks.TextSizeCheck",
+    "type" : "WARNING",
+    "resultId" : 32,
+    "message" : "Consider modifying the LayoutParams to allow for text expansion.",
+    "screenshotFile" : "C:\\Users\\User\\Downloads\\mobile-a11y-poc\\atf-results\\atf-scan-amz-20260910_174149-shots\\shots\\issue-0007.png",
+    "element" : {
+      "className" : "android.widget.TextView",
+      "resourceName" : "in.amazon.mShop.android.shopping:id/tiles_nav_item_text",
+      "contentDescription" : "",
+      "text" : "Pay",
+      "clickable" : false,
+      "enabled" : true,
+      "left" : 114,
+      "top" : 203,
+      "right" : 161,
+      "bottom" : 248
+    }
+  }, {
+    "checkClass" : "TextSizeCheck",
+    "checkOriginalClass" : "com.google.android.apps.common.testing.accessibility.framework.checks.TextSizeCheck",
+    "type" : "WARNING",
+    "resultId" : 32,
+    "message" : "Consider modifying the LayoutParams to allow for text expansion.",
+    "screenshotFile" : "C:\\Users\\User\\Downloads\\mobile-a11y-poc\\atf-results\\atf-scan-amz-20260910_174149-shots\\shots\\issue-0008.png",
+    "element" : {
+      "className" : "android.widget.TextView",
+      "resourceName" : "in.amazon.mShop.android.shopping:id/tiles_nav_item_text",
+      "contentDescription" : "",
+      "text" : "Fresh",
+      "clickable" : false,
+      "enabled" : true,
+      "left" : 334,
+      "top" : 203,
+      "right" : 404,
+      "bottom" : 248
+    }
+  }, {
+    "checkClass" : "TextSizeCheck",
+    "checkOriginalClass" : "com.google.android.apps.common.testing.accessibility.framework.checks.TextSizeCheck",
+    "type" : "WARNING",
+    "resultId" : 32,
+    "message" : "Consider modifying the LayoutParams to allow for text expansion.",
+    "screenshotFile" : "C:\\Users\\User\\Downloads\\mobile-a11y-poc\\atf-results\\atf-scan-amz-20260910_174149-shots\\shots\\issue-0009.png",
+    "element" : {
+      "className" : "android.widget.TextView",
+      "resourceName" : "in.amazon.mShop.android.shopping:id/tiles_nav_item_text",
+      "contentDescription" : "",
+      "text" : "Bazaar",
+      "clickable" : false,
+      "enabled" : true,
+      "left" : 556,
+      "top" : 203,
+      "right" : 644,
+      "bottom" : 248
+    }
+  }, {
+    "checkClass" : "TextSizeCheck",
+    "checkOriginalClass" : "com.google.android.apps.common.testing.accessibility.framework.checks.TextSizeCheck",
+    "type" : "WARNING",
+    "resultId" : 32,
+    "message" : "Consider modifying the LayoutParams to allow for text expansion.",
+    "screenshotFile" : "C:\\Users\\User\\Downloads\\mobile-a11y-poc\\atf-results\\atf-scan-amz-20260910_174149-shots\\shots\\issue-0010.png",
+    "element" : {
+      "className" : "android.widget.TextView",
+      "resourceName" : "in.amazon.mShop.android.shopping:id/tiles_nav_item_text",
+      "contentDescription" : "",
+      "text" : "Video",
+      "clickable" : false,
+      "enabled" : true,
+      "left" : 793,
+      "top" : 203,
+      "right" : 869,
+      "bottom" : 248
+    }
+  }, {
+    "checkClass" : "TextSizeCheck",
+    "checkOriginalClass" : "com.google.android.apps.common.testing.accessibility.framework.checks.TextSizeCheck",
+    "type" : "INFO",
+    "resultId" : 32,
+    "message" : "Consider modifying the LayoutParams to allow for text expansion. This item may be only partially visible within a scrollable container.",
+    "screenshotFile" : "C:\\Users\\User\\Downloads\\mobile-a11y-poc\\atf-results\\atf-scan-amz-20260910_174149-shots\\shots\\issue-0011.png",
+    "element" : {
+      "className" : "android.widget.TextView",
+      "resourceName" : "in.amazon.mShop.android.shopping:id/tiles_nav_item_text",
+      "contentDescription" : "",
+      "text" : "Pharmacy",
+      "clickable" : false,
+      "enabled" : true,
+      "left" : 997,
+      "top" : 203,
+      "right" : 1080,
+      "bottom" : 248
+    }
+  }, {
+    "checkClass" : "TextSizeCheck",
+    "checkOriginalClass" : "com.google.android.apps.common.testing.accessibility.framework.checks.TextSizeCheck",
+    "type" : "INFO",
+    "resultId" : 35,
+    "message" : "Consider modifying the LayoutParams to allow for text expansion.",
+    "screenshotFile" : "C:\\Users\\User\\Downloads\\mobile-a11y-poc\\atf-results\\atf-scan-amz-20260910_174149-shots\\shots\\issue-0004.png",
+    "element" : {
+      "className" : "android.widget.Button",
+      "resourceName" : "in.amazon.mShop.android.shopping:id/glow_subnav_ingress",
+      "contentDescription" : "",
+      "text" : "",
+      "clickable" : true,
+      "enabled" : true,
+      "left" : 28,
+      "top" : 446,
+      "right" : 1052,
+      "bottom" : 570
+    }
+  }, {
+    "checkClass" : "TextSizeCheck",
+    "checkOriginalClass" : "com.google.android.apps.common.testing.accessibility.framework.checks.TextSizeCheck",
+    "type" : "INFO",
+    "resultId" : 35,
+    "message" : "Consider modifying the LayoutParams to allow for text expansion.",
+    "screenshotFile" : "C:\\Users\\User\\Downloads\\mobile-a11y-poc\\atf-results\\atf-scan-amz-20260910_174149-shots\\shots\\issue-0012.png",
+    "element" : {
+      "className" : "android.widget.LinearLayout",
+      "resourceName" : "in.amazon.mShop.android.shopping:id/chrome_search_edit_frame",
+      "contentDescription" : "",
+      "text" : "",
+      "clickable" : false,
+      "enabled" : true,
+      "left" : 34,
+      "top" : 297,
+      "right" : 956,
+      "bottom" : 421
+    }
+  } ]
+}

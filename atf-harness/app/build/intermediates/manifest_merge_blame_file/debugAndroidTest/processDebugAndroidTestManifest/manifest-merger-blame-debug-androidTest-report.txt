@@ -3,24 +3,24 @@
 3    package="com.poc.a11y.atf.harness.test" >
 4
 5    <uses-sdk
-5-->C:\Users\User\Downloads\mobile-a11y-poc\atf-harness\app\build\intermediates\tmp\manifest\androidTest\debug\tempFile1ProcessTestManifest4856917785746081266.xml:5:5-74
+5-->C:\Users\User\Downloads\mobile-a11y-poc\atf-harness\app\build\intermediates\tmp\manifest\androidTest\debug\tempFile1ProcessTestManifest1462207866660850976.xml:5:5-74
 6        android:minSdkVersion="26"
-6-->C:\Users\User\Downloads\mobile-a11y-poc\atf-harness\app\build\intermediates\tmp\manifest\androidTest\debug\tempFile1ProcessTestManifest4856917785746081266.xml:5:15-41
+6-->C:\Users\User\Downloads\mobile-a11y-poc\atf-harness\app\build\intermediates\tmp\manifest\androidTest\debug\tempFile1ProcessTestManifest1462207866660850976.xml:5:15-41
 7        android:targetSdkVersion="34" />
-7-->C:\Users\User\Downloads\mobile-a11y-poc\atf-harness\app\build\intermediates\tmp\manifest\androidTest\debug\tempFile1ProcessTestManifest4856917785746081266.xml:5:42-71
+7-->C:\Users\User\Downloads\mobile-a11y-poc\atf-harness\app\build\intermediates\tmp\manifest\androidTest\debug\tempFile1ProcessTestManifest1462207866660850976.xml:5:42-71
 8
 9    <instrumentation
-9-->C:\Users\User\Downloads\mobile-a11y-poc\atf-harness\app\build\intermediates\tmp\manifest\androidTest\debug\tempFile1ProcessTestManifest4856917785746081266.xml:7:5-11:74
+9-->C:\Users\User\Downloads\mobile-a11y-poc\atf-harness\app\build\intermediates\tmp\manifest\androidTest\debug\tempFile1ProcessTestManifest1462207866660850976.xml:7:5-11:74
 10        android:name="androidx.test.runner.AndroidJUnitRunner"
-10-->C:\Users\User\Downloads\mobile-a11y-poc\atf-harness\app\build\intermediates\tmp\manifest\androidTest\debug\tempFile1ProcessTestManifest4856917785746081266.xml:7:22-76
+10-->C:\Users\User\Downloads\mobile-a11y-poc\atf-harness\app\build\intermediates\tmp\manifest\androidTest\debug\tempFile1ProcessTestManifest1462207866660850976.xml:7:22-76
 11        android:functionalTest="false"
-11-->C:\Users\User\Downloads\mobile-a11y-poc\atf-harness\app\build\intermediates\tmp\manifest\androidTest\debug\tempFile1ProcessTestManifest4856917785746081266.xml:10:22-52
+11-->C:\Users\User\Downloads\mobile-a11y-poc\atf-harness\app\build\intermediates\tmp\manifest\androidTest\debug\tempFile1ProcessTestManifest1462207866660850976.xml:10:22-52
 12        android:handleProfiling="false"
-12-->C:\Users\User\Downloads\mobile-a11y-poc\atf-harness\app\build\intermediates\tmp\manifest\androidTest\debug\tempFile1ProcessTestManifest4856917785746081266.xml:9:22-53
+12-->C:\Users\User\Downloads\mobile-a11y-poc\atf-harness\app\build\intermediates\tmp\manifest\androidTest\debug\tempFile1ProcessTestManifest1462207866660850976.xml:9:22-53
 13        android:label="Tests for com.poc.a11y.atf.harness"
-13-->C:\Users\User\Downloads\mobile-a11y-poc\atf-harness\app\build\intermediates\tmp\manifest\androidTest\debug\tempFile1ProcessTestManifest4856917785746081266.xml:11:22-72
+13-->C:\Users\User\Downloads\mobile-a11y-poc\atf-harness\app\build\intermediates\tmp\manifest\androidTest\debug\tempFile1ProcessTestManifest1462207866660850976.xml:11:22-72
 14        android:targetPackage="com.poc.a11y.atf.harness" />
-14-->C:\Users\User\Downloads\mobile-a11y-poc\atf-harness\app\build\intermediates\tmp\manifest\androidTest\debug\tempFile1ProcessTestManifest4856917785746081266.xml:8:22-70
+14-->C:\Users\User\Downloads\mobile-a11y-poc\atf-harness\app\build\intermediates\tmp\manifest\androidTest\debug\tempFile1ProcessTestManifest1462207866660850976.xml:8:22-70
 15
 16    <queries>
 16-->[androidx.test:runner:1.6.1] C:\Users\User\.gradle\caches\9.1.0\transforms\d143311d5760c2ccf8bb999012abed46\workspace\transformed\runner-1.6.1\AndroidManifest.xml:24:5-28:15

@@ -1,1 +1,2 @@
 com.poc.a11y.atf.harness
+xml atf_accessibility_service
