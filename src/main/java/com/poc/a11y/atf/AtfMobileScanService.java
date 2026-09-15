@@ -162,9 +162,10 @@ public class AtfMobileScanService {
         appiumDriverManager.stopUiAutomatorServer(request.getDeviceName());    }
 
     private AndroidDriver acquirePhysicalDriver(ScanRequest request) {
-        if (request.getExistingDriver() != null) {
+        AndroidDriver existing = request.getExistingAndroidDriver();
+        if (existing != null) {
             log.info("Using AndroidDriver already on the request — not launching the app");
-            return request.getExistingDriver();
+            return existing;
         }
         if (request.getAppiumSessionId() != null && !request.getAppiumSessionId().isBlank()) {
             log.info("Attaching to existing Appium session {} — not launching the app",

@@ -496,7 +496,7 @@ public class AppiumDriverManager {
         return value.trim();
     }
 
-    static void sleepQuietly(int seconds) {
+    public static void sleepQuietly(int seconds) {
         if (seconds <= 0) {
             return;
         }

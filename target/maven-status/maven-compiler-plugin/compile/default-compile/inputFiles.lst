@@ -11,6 +11,7 @@ C:\Users\User\Downloads\mobile-a11y-poc\src\main\java\com\poc\a11y\atf\dto\AtfEl
 C:\Users\User\Downloads\mobile-a11y-poc\src\main\java\com\poc\a11y\atf\dto\AtfElementOutputDto.java
 C:\Users\User\Downloads\mobile-a11y-poc\src\main\java\com\poc\a11y\atf\dto\AtfScanOutputDto.java
 C:\Users\User\Downloads\mobile-a11y-poc\src\main\java\com\poc\a11y\atf\dto\WcagMapping.java
+C:\Users\User\Downloads\mobile-a11y-poc\src\main\java\com\poc\a11y\atf\MobileAccessibilityScanFacade.java
 C:\Users\User\Downloads\mobile-a11y-poc\src\main\java\com\poc\a11y\atf\PackageIdentity.java
 C:\Users\User\Downloads\mobile-a11y-poc\src\main\java\com\poc\a11y\atf\SauceLabsClient.java
 C:\Users\User\Downloads\mobile-a11y-poc\src\main\java\com\poc\a11y\checks\AccessibilityCheck.java
@@ -20,6 +21,11 @@ C:\Users\User\Downloads\mobile-a11y-poc\src\main\java\com\poc\a11y\checks\TouchT
 C:\Users\User\Downloads\mobile-a11y-poc\src\main\java\com\poc\a11y\checks\UnlabeledEditableFieldCheck.java
 C:\Users\User\Downloads\mobile-a11y-poc\src\main\java\com\poc\a11y\controller\GlobalExceptionHandler.java
 C:\Users\User\Downloads\mobile-a11y-poc\src\main\java\com\poc\a11y\controller\ScanController.java
+C:\Users\User\Downloads\mobile-a11y-poc\src\main\java\com\poc\a11y\ios\dto\IosAuditRawOutput.java
+C:\Users\User\Downloads\mobile-a11y-poc\src\main\java\com\poc\a11y\ios\IosAccessibilityAuditor.java
+C:\Users\User\Downloads\mobile-a11y-poc\src\main\java\com\poc\a11y\ios\IosAccessibilityScanService.java
+C:\Users\User\Downloads\mobile-a11y-poc\src\main\java\com\poc\a11y\ios\IosAuditResultMapper.java
+C:\Users\User\Downloads\mobile-a11y-poc\src\main\java\com\poc\a11y\ios\IosDriverManager.java
 C:\Users\User\Downloads\mobile-a11y-poc\src\main\java\com\poc\a11y\MobileA11yPocApplication.java
 C:\Users\User\Downloads\mobile-a11y-poc\src\main\java\com\poc\a11y\model\Issue.java
 C:\Users\User\Downloads\mobile-a11y-poc\src\main\java\com\poc\a11y\model\ScanRequest.java

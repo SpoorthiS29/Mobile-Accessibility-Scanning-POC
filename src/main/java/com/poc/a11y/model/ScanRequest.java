@@ -3,7 +3,9 @@ package com.poc.a11y.model;
 import com.fasterxml.jackson.annotation.JsonAlias;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonProperty;
+import io.appium.java_client.AppiumDriver;
 import io.appium.java_client.android.AndroidDriver;
+import io.appium.java_client.ios.IOSDriver;
 import jakarta.validation.constraints.NotBlank;
 import lombok.Data;
 
@@ -11,7 +13,7 @@ import lombok.Data;
 public class ScanRequest {
 
     private String appName;
-    /** Absolute path to the .apk on the machine running Appium, OR an already-installed app package. */
+    /** Absolute path to the app on the machine running Appium (.apk / .app / .ipa), or omit if already installed. */
     private String appPath;
 
     @NotBlank
@@ -21,9 +23,12 @@ public class ScanRequest {
 
     private String deviceName = "RZ8TA1A27YM";
 
-    /** Use instead of appPath if the app is already installed. */
+    /** Use instead of appPath if the Android app is already installed. */
     private String appPackage;
     private String appActivity;
+
+    /** iOS bundle id. Falls back to {@link #appPackage} when omitted. */
+    private String bundleId;
 
     private String appiumServerUrl = "http://127.0.0.1:4723";
 
@@ -38,12 +43,13 @@ public class ScanRequest {
 
     /**
      * In-process only (not sent over HTTP). When the real scanner already has
-     * a live {@link AndroidDriver}, pass it here so this POC does not launch
-     * the app again. The session is quit before ATF (to free UiAutomation)
-     * but the app process is left running.
+     * a live Appium driver, pass it here so this POC does not launch the app
+     * again. Android: the session is quit before ATF (to free UiAutomation)
+     * but the app process is left running. iOS: the XCUITest session is kept
+     * for {@code mobile: performAccessibilityAudit}.
      */
     @JsonIgnore
-    private AndroidDriver existingDriver;
+    private AppiumDriver existingDriver;
 
     /**
      * HTTP equivalent of an existing Appium session. When set, the service
@@ -60,7 +66,7 @@ public class ScanRequest {
     @JsonAlias("scrollToEnd")
     private boolean scroll = false;
 
-    private int maxScrolls = 12;
+    private int maxScrolls = 5;
 
     /** When true, force-stop the app after the ATF scan. Default leaves it open. */
     private boolean closeApp = false;
@@ -84,6 +90,51 @@ public class ScanRequest {
                 || (appiumSessionId != null && !appiumSessionId.isBlank());
     }
 
+    public boolean isIos() {
+        return platformName != null && "ios".equalsIgnoreCase(platformName.trim());
+    }
+
+    /** iOS bundle id, or {@link #appPackage} when bundleId was not set. */
+    public String resolveBundleId() {
+        if (bundleId != null && !bundleId.isBlank()) {
+            return bundleId.trim();
+        }
+        return blankToNull(appPackage);
+    }
+
+    /**
+     * Automation engine for the current platform. Defaults to XCUITest on iOS
+     * even when the request still has the Android default {@code UiAutomator2}.
+     */
+    public String resolveAutomationName() {
+        if (isIos()) {
+            if (automationName == null || automationName.isBlank()
+                    || "UiAutomator2".equalsIgnoreCase(automationName)) {
+                return "XCUITest";
+            }
+            return automationName;
+        }
+        if (automationName == null || automationName.isBlank()) {
+            return "UiAutomator2";
+        }
+        return automationName;
+    }
+
+    public AndroidDriver getExistingAndroidDriver() {
+        return existingDriver instanceof AndroidDriver androidDriver ? androidDriver : null;
+    }
+
+    public IOSDriver getExistingIosDriver() {
+        return existingDriver instanceof IOSDriver iosDriver ? iosDriver : null;
+    }
+
+    private static String blankToNull(String value) {
+        if (value == null || value.isBlank()) {
+            return null;
+        }
+        return value.trim();
+    }
+
     public String getAppName() {return appName;}
     public void setAppName(String appName) {this.appName = appName;}
 
@@ -105,6 +156,9 @@ public class ScanRequest {
     public String getAppActivity() { return appActivity; }
     public void setAppActivity(String appActivity) { this.appActivity = appActivity; }
 
+    public String getBundleId() { return bundleId; }
+    public void setBundleId(String bundleId) { this.bundleId = bundleId; }
+
     public String getAppiumServerUrl() { return appiumServerUrl; }
     public void setAppiumServerUrl(String appiumServerUrl) { this.appiumServerUrl = appiumServerUrl; }
 
@@ -117,8 +171,8 @@ public class ScanRequest {
     public double getDensityScale() { return densityScale; }
     public void setDensityScale(double densityScale) { this.densityScale = densityScale; }
 
-    public AndroidDriver getExistingDriver() { return existingDriver; }
-    public void setExistingDriver(AndroidDriver existingDriver) { this.existingDriver = existingDriver; }
+    public AppiumDriver getExistingDriver() { return existingDriver; }
+    public void setExistingDriver(AppiumDriver existingDriver) { this.existingDriver = existingDriver; }
 
     public String getAppiumSessionId() { return appiumSessionId; }
     public void setAppiumSessionId(String appiumSessionId) { this.appiumSessionId = appiumSessionId; }
