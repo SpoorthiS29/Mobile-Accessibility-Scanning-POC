@@ -8,7 +8,8 @@ import java.util.Map;
 
 /**
  * In-memory handle to raw XCUIAccessibilityAudit output written under {@code ios-results/}.
- * Each viewport map keeps Appium's issue objects unchanged plus a local screenshot path.
+ * Each issue in a viewport map carries its own cropped {@code screenshotFile} when
+ * the element's rect was known at capture time.
  */
 @Data
 public class IosAuditRawOutput {

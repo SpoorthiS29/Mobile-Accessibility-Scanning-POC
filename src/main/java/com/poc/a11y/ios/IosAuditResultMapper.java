@@ -13,13 +13,15 @@ import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.ArrayList;
 import java.util.Base64;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
 /**
  * Maps raw XCUIAccessibilityAudit items onto the same {@link Issue} /
  * {@link com.poc.a11y.model.ScanResult} shape used by the Android ATF path.
- * Screenshots are encoded as base64 for the HTTP response.
+ * Each issue uses its own element crop (not the full viewport). Screenshots
+ * are encoded as base64 for the HTTP response, interned by file path.
  */
 @Component
 public class IosAuditResultMapper {
@@ -48,9 +50,8 @@ public class IosAuditResultMapper {
             return List.of();
         }
         List<Issue> issues = new ArrayList<>();
+        Map<String, String> base64ByPath = new HashMap<>();
         for (Map<String, Object> viewport : raw.getViewports()) {
-            String screenshotPath = str(viewport.get("screenshotFile"));
-            String base64 = toBase64(screenshotPath);
             Object batchObj = viewport.get("issues");
             if (!(batchObj instanceof List<?> batch)) {
                 continue;
@@ -59,6 +60,11 @@ public class IosAuditResultMapper {
                 if (item instanceof Map<?, ?> map) {
                     @SuppressWarnings("unchecked")
                     Map<String, Object> issueMap = (Map<String, Object>) map;
+                    String screenshotPath = str(issueMap.get(IosIssueScreenshotCropper.SCREENSHOT_FILE_KEY));
+                    String base64 = null;
+                    if (screenshotPath != null) {
+                        base64 = base64ByPath.computeIfAbsent(screenshotPath, this::toBase64);
+                    }
                     issues.add(toIssue(issueMap, screenshotPath, base64));
                 }
             }

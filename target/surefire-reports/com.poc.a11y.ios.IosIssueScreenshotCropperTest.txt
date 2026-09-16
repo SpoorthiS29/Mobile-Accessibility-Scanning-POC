@@ -1,0 +1,14 @@
+-------------------------------------------------------------------------------
+Test set: com.poc.a11y.ios.IosIssueScreenshotCropperTest
+-------------------------------------------------------------------------------
+Tests run: 2, Failures: 1, Errors: 0, Skipped: 0, Time elapsed: 1.277 s <<< FAILURE! -- in com.poc.a11y.ios.IosIssueScreenshotCropperTest
+com.poc.a11y.ios.IosIssueScreenshotCropperTest.cropsEachElementAndReusesFileForSameWidget -- Time elapsed: 1.137 s <<< FAILURE!
+org.opentest4j.AssertionFailedError: expected: <true> but was: <false>
+	at org.junit.jupiter.api.AssertionFailureBuilder.build(AssertionFailureBuilder.java:158)
+	at org.junit.jupiter.api.AssertionFailureBuilder.buildAndThrow(AssertionFailureBuilder.java:139)
+	at org.junit.jupiter.api.AssertTrue.failNotTrue(AssertTrue.java:69)
+	at org.junit.jupiter.api.AssertTrue.assertTrue(AssertTrue.java:41)
+	at org.junit.jupiter.api.AssertTrue.assertTrue(AssertTrue.java:35)
+	at org.junit.jupiter.api.Assertions.assertTrue(Assertions.java:195)
+	at com.poc.a11y.ios.IosIssueScreenshotCropperTest.cropsEachElementAndReusesFileForSameWidget(IosIssueScreenshotCropperTest.java:51)
+

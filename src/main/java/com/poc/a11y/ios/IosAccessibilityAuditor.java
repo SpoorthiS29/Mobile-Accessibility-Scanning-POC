@@ -5,6 +5,7 @@ import com.poc.a11y.atf.AppiumDriverManager;
 import com.poc.a11y.ios.dto.IosAuditRawOutput;
 import com.poc.a11y.model.ScanRequest;
 import io.appium.java_client.ios.IOSDriver;
+import org.openqa.selenium.Dimension;
 import org.openqa.selenium.OutputType;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -24,7 +25,8 @@ import java.util.Map;
 /**
  * Runs Apple's XCUIAccessibilityAudit through Appium XCUITest
  * ({@code mobile: performAccessibilityAudit}), optionally scrolling
- * viewports, and writes raw JSON + screenshots under {@code ios-results/}.
+ * viewports, and writes raw JSON + per-element screenshot crops under
+ * {@code ios-results/}.
  */
 @Component
 public class IosAccessibilityAuditor {
@@ -34,9 +36,12 @@ public class IosAccessibilityAuditor {
             DateTimeFormatter.ofPattern("yyyyMMdd_HHmmss");
 
     private final ObjectMapper objectMapper;
+    private final IosIssueScreenshotCropper screenshotCropper;
 
-    public IosAccessibilityAuditor(ObjectMapper objectMapper) {
+    public IosAccessibilityAuditor(ObjectMapper objectMapper,
+                                   IosIssueScreenshotCropper screenshotCropper) {
         this.objectMapper = objectMapper;
+        this.screenshotCropper = screenshotCropper;
     }
 
     public IosAuditRawOutput run(IOSDriver driver, ScanRequest request) {
@@ -53,8 +58,10 @@ public class IosAccessibilityAuditor {
         List<Map<String, Object>> viewports = new ArrayList<>();
         String previousSourceHash = null;
         int unchanged = 0;
+        int nextShotIndex = 1;
         int maxScrolls = Math.max(0, request.getMaxScrolls());
         int maxPasses = request.isScroll() ? maxScrolls + 1 : 1;
+        Dimension window = windowSize(driver);
 
         for (int pass = 0; pass < maxPasses; pass++) {
             if (pass == 0) {
@@ -64,17 +71,22 @@ public class IosAccessibilityAuditor {
             }
 
             List<Map<String, Object>> issues = performAudit(driver);
-            Path shot = shotsDir.resolve(String.format("viewport-%03d.png", pass));
-            captureScreenshot(driver, shot);
+            byte[] screenshot = captureScreenshot(driver);
+            nextShotIndex = screenshotCropper.attachCrops(
+                    screenshot,
+                    window.getWidth(),
+                    window.getHeight(),
+                    issues,
+                    shotsDir,
+                    nextShotIndex);
+            slimIssues(issues);
 
             Map<String, Object> viewport = new LinkedHashMap<>();
             viewport.put("index", pass);
-            viewport.put("screenshotFile", shot.toAbsolutePath().toString());
             viewport.put("issues", issues);
             viewports.add(viewport);
 
-            log.info("iOS viewport {}: {} accessibility issue(s), screenshot={}",
-                    pass, issues.size(), shot.getFileName());
+            log.info("iOS viewport {}: {} accessibility issue(s)", pass, issues.size());
 
             if (!request.isScroll() || pass == maxPasses - 1) {
                 break;
@@ -150,12 +162,36 @@ public class IosAccessibilityAuditor {
         return List.of();
     }
 
-    private void captureScreenshot(IOSDriver driver, Path shot) {
-        try {
-            Files.write(shot, driver.getScreenshotAs(OutputType.BYTES));
-        } catch (IOException e) {
-            throw new IllegalStateException("Failed to write screenshot " + shot, e);
+    /**
+     * Drops the XCTest debug dump ({@code elementDescription}) so the on-disk
+     * JSON and in-memory payload stay small. Compact/detailed descriptions
+     * and {@code elementAttributes} (including the crop rect) are kept.
+     */
+    private void slimIssues(List<Map<String, Object>> issues) {
+        for (Map<String, Object> issue : issues) {
+            issue.remove("elementDescription");
         }
+    }
+
+    private byte[] captureScreenshot(IOSDriver driver) {
+        try {
+            return driver.getScreenshotAs(OutputType.BYTES);
+        } catch (Exception e) {
+            log.warn("Failed to capture iOS screenshot: {}", e.getMessage());
+            return new byte[0];
+        }
+    }
+
+    private static Dimension windowSize(IOSDriver driver) {
+        try {
+            Dimension size = driver.manage().window().getSize();
+            if (size != null && size.getWidth() > 0 && size.getHeight() > 0) {
+                return size;
+            }
+        } catch (Exception e) {
+            log.warn("Could not read iOS window size: {}", e.getMessage());
+        }
+        return new Dimension(0, 0);
     }
 
     private void swipeUp(IOSDriver driver) {
