@@ -149,7 +149,7 @@ public class AtfScanTest {
         Map<String, List<Rect>> previousPositionlessBounds = null;
 
         // maxScrolls = max scroll advances after the first viewport (max viewports = maxScrolls + 1).
-        for (int pass = 0; pass <= 5; pass++) {
+        for (int pass = 0; pass <= maxScrolls; pass++) {
             settleBeforeCapture(uiAutomation, realMetrics, pass == 0);
             // Sample bounds on both sides of the screenshot and keep only the
             // rects that did not move: anything still animating cannot be
@@ -204,7 +204,7 @@ public class AtfScanTest {
                 }
             }
 
-            if (!scrollToEnd || pass >= 5) {
+            if (!scrollToEnd || pass >= maxScrolls) {
                 break;
             }
 

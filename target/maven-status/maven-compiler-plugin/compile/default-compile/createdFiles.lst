@@ -7,6 +7,7 @@ com\poc\a11y\checks\UnlabeledEditableFieldCheck.class
 com\poc\a11y\atf\AdbCommandExecutor$Result.class
 com\poc\a11y\atf\AdbCommandExecutor.class
 com\poc\a11y\atf\dto\WcagMapping.class
+com\poc\a11y\atf\ApkManifestReader.class
 com\poc\a11y\atf\AtfScanController.class
 com\poc\a11y\ios\IosDriverManager.class
 com\poc\a11y\atf\AtfHarnessRunner.class
@@ -25,6 +26,7 @@ com\poc\a11y\atf\dto\AtfElementDto.class
 com\poc\a11y\ios\IosAccessibilityAuditor.class
 com\poc\a11y\controller\ScanController.class
 com\poc\a11y\atf\MobileAccessibilityScanFacade.class
+com\poc\a11y\atf\ApkManifestReader$ManifestAttrs.class
 com\poc\a11y\checks\AccessibilityCheck.class
 com\poc\a11y\service\AppiumSessionManager.class
 com\poc\a11y\ios\IosAccessibilityScanService.class
@@ -32,6 +34,7 @@ com\poc\a11y\atf\AppiumDriverManager.class
 com\poc\a11y\atf\dto\AtfScanOutputDto.class
 com\poc\a11y\atf\AtfProperties.class
 com\poc\a11y\ios\IosDriverManager$1.class
+com\poc\a11y\atf\PackageIdentity.class
 com\poc\a11y\atf\SauceLabsClient.class
 com\poc\a11y\model\Severity.class
 com\poc\a11y\checks\MissingContentDescCheck.class

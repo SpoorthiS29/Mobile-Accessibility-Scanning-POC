@@ -66,7 +66,7 @@ public class ScanRequest {
     @JsonAlias("scrollToEnd")
     private boolean scroll = false;
 
-    private int maxScrolls = 5;
+    private int maxScrolls;
 
     /** When true, force-stop the app after the ATF scan. Default leaves it open. */
     private boolean closeApp = false;

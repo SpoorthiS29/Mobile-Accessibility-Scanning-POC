@@ -179,7 +179,7 @@ public class AtfHarnessRunner {
         args.add(String.valueOf(request.isScroll()));
         args.add("-e");
         args.add("maxScrolls");
-        args.add(String.valueOf(Math.max(1, request.getMaxScrolls())));
+        args.add(String.valueOf(request.getMaxScrolls()));
     }
 
     private String instrumentTarget() {
