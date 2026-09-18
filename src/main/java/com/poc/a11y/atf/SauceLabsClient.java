@@ -274,7 +274,7 @@ public class SauceLabsClient {
     }
 
     private static String region(ScanRequest request) {
-        String region = request.getSauceRegion();
+        String region = request.resolveCloudRegion();
         if (region == null || region.isBlank()) {
             return "eu-central-1";
         }
@@ -282,10 +282,10 @@ public class SauceLabsClient {
     }
 
     private static String basicAuth(ScanRequest request) {
-        String username = request.getSauceUsername();
-        String accessKey = request.getSauceAccessKey();
+        String username = request.resolveCloudUsername();
+        String accessKey = request.resolveCloudAccessKey();
         if (username == null || username.isBlank() || accessKey == null || accessKey.isBlank()) {
-            throw new IllegalArgumentException("sauceUsername and sauceAccessKey are required for virtualDevice scans");
+            throw new IllegalArgumentException("cloudUsername and cloudAccessKey are required for Sauce Labs scans");
         }
         String token = username.trim() + ":" + accessKey.trim();
         return "Basic " + Base64.getEncoder().encodeToString(token.getBytes(StandardCharsets.UTF_8));

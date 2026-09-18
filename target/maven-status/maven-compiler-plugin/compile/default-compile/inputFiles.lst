@@ -1,4 +1,8 @@
 C:\Users\User\Downloads\mobile-a11y-poc\src\main\java\com\poc\a11y\atf\AdbCommandExecutor.java
+C:\Users\User\Downloads\mobile-a11y-poc\src\main\java\com\poc\a11y\atf\android\AndroidScanStrategy.java
+C:\Users\User\Downloads\mobile-a11y-poc\src\main\java\com\poc\a11y\atf\android\AndroidScanSupport.java
+C:\Users\User\Downloads\mobile-a11y-poc\src\main\java\com\poc\a11y\atf\android\CloudAppiumAndroidScanStrategy.java
+C:\Users\User\Downloads\mobile-a11y-poc\src\main\java\com\poc\a11y\atf\android\LocalAdbAndroidScanStrategy.java
 C:\Users\User\Downloads\mobile-a11y-poc\src\main\java\com\poc\a11y\atf\ApkManifestReader.java
 C:\Users\User\Downloads\mobile-a11y-poc\src\main\java\com\poc\a11y\atf\AppiumDriverManager.java
 C:\Users\User\Downloads\mobile-a11y-poc\src\main\java\com\poc\a11y\atf\AtfHarnessRunner.java
@@ -20,6 +24,18 @@ C:\Users\User\Downloads\mobile-a11y-poc\src\main\java\com\poc\a11y\checks\Duplic
 C:\Users\User\Downloads\mobile-a11y-poc\src\main\java\com\poc\a11y\checks\MissingContentDescCheck.java
 C:\Users\User\Downloads\mobile-a11y-poc\src\main\java\com\poc\a11y\checks\TouchTargetSizeCheck.java
 C:\Users\User\Downloads\mobile-a11y-poc\src\main\java\com\poc\a11y\checks\UnlabeledEditableFieldCheck.java
+C:\Users\User\Downloads\mobile-a11y-poc\src\main\java\com\poc\a11y\cloud\AbstractRemoteCloudPlatformAdapter.java
+C:\Users\User\Downloads\mobile-a11y-poc\src\main\java\com\poc\a11y\cloud\BrowserStackClient.java
+C:\Users\User\Downloads\mobile-a11y-poc\src\main\java\com\poc\a11y\cloud\BrowserStackCloudPlatformAdapter.java
+C:\Users\User\Downloads\mobile-a11y-poc\src\main\java\com\poc\a11y\cloud\CloudAppRefs.java
+C:\Users\User\Downloads\mobile-a11y-poc\src\main\java\com\poc\a11y\cloud\CloudHttpSupport.java
+C:\Users\User\Downloads\mobile-a11y-poc\src\main\java\com\poc\a11y\cloud\CloudPlatform.java
+C:\Users\User\Downloads\mobile-a11y-poc\src\main\java\com\poc\a11y\cloud\CloudPlatformAdapter.java
+C:\Users\User\Downloads\mobile-a11y-poc\src\main\java\com\poc\a11y\cloud\CloudPlatformRegistry.java
+C:\Users\User\Downloads\mobile-a11y-poc\src\main\java\com\poc\a11y\cloud\LambdaTestClient.java
+C:\Users\User\Downloads\mobile-a11y-poc\src\main\java\com\poc\a11y\cloud\LambdaTestCloudPlatformAdapter.java
+C:\Users\User\Downloads\mobile-a11y-poc\src\main\java\com\poc\a11y\cloud\LocalCloudPlatformAdapter.java
+C:\Users\User\Downloads\mobile-a11y-poc\src\main\java\com\poc\a11y\cloud\SauceLabsCloudPlatformAdapter.java
 C:\Users\User\Downloads\mobile-a11y-poc\src\main\java\com\poc\a11y\controller\GlobalExceptionHandler.java
 C:\Users\User\Downloads\mobile-a11y-poc\src\main\java\com\poc\a11y\controller\ScanController.java
 C:\Users\User\Downloads\mobile-a11y-poc\src\main\java\com\poc\a11y\ios\dto\IosAuditRawOutput.java
@@ -27,7 +43,9 @@ C:\Users\User\Downloads\mobile-a11y-poc\src\main\java\com\poc\a11y\ios\IosAccess
 C:\Users\User\Downloads\mobile-a11y-poc\src\main\java\com\poc\a11y\ios\IosAccessibilityScanService.java
 C:\Users\User\Downloads\mobile-a11y-poc\src\main\java\com\poc\a11y\ios\IosAuditResultMapper.java
 C:\Users\User\Downloads\mobile-a11y-poc\src\main\java\com\poc\a11y\ios\IosDriverManager.java
+C:\Users\User\Downloads\mobile-a11y-poc\src\main\java\com\poc\a11y\ios\IosIssueDeduplicator.java
 C:\Users\User\Downloads\mobile-a11y-poc\src\main\java\com\poc\a11y\ios\IosIssueScreenshotCropper.java
+C:\Users\User\Downloads\mobile-a11y-poc\src\main\java\com\poc\a11y\ios\IosWdaProperties.java
 C:\Users\User\Downloads\mobile-a11y-poc\src\main\java\com\poc\a11y\MobileA11yPocApplication.java
 C:\Users\User\Downloads\mobile-a11y-poc\src\main\java\com\poc\a11y\model\Issue.java
 C:\Users\User\Downloads\mobile-a11y-poc\src\main\java\com\poc\a11y\model\ScanRequest.java

@@ -1,5 +1,7 @@
 package com.poc.a11y.atf;
 
+import com.poc.a11y.cloud.CloudPlatformAdapter;
+import com.poc.a11y.cloud.CloudPlatformRegistry;
 import com.poc.a11y.model.ScanRequest;
 import io.appium.java_client.android.AndroidDriver;
 import io.appium.java_client.android.options.UiAutomator2Options;
@@ -9,14 +11,11 @@ import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Component;
 
 import java.io.IOException;
-import java.net.MalformedURLException;
 import java.net.URL;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.time.Duration;
-import java.util.HashMap;
-import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 
@@ -32,20 +31,21 @@ public class AppiumDriverManager {
     private static final Logger log = LoggerFactory.getLogger(AppiumDriverManager.class);
 
     private final AtfProperties properties;
-    private final SauceLabsClient sauceLabsClient;
+    private final CloudPlatformRegistry cloudPlatformRegistry;
     private final AdbCommandExecutor adb;
 
     public AppiumDriverManager(AtfProperties properties,
-                               SauceLabsClient sauceLabsClient,
+                               CloudPlatformRegistry cloudPlatformRegistry,
                                AdbCommandExecutor adb) {
         this.properties = properties;
-        this.sauceLabsClient = sauceLabsClient;
+        this.cloudPlatformRegistry = cloudPlatformRegistry;
         this.adb = adb;
     }
 
     public AndroidDriver start(ScanRequest request) {
-        if (request.isVirtualDevice()) {
-            return startOnVirtualDevice(request);
+        CloudPlatformAdapter adapter = cloudPlatformRegistry.resolve(request);
+        if (!adapter.isLocal()) {
+            return startOnCloud(request, adapter);
         }
         String appPackage = blankToNull(request.getAppPackage());
         String appActivity = blankToNull(request.getAppActivity());
@@ -58,7 +58,6 @@ public class AppiumDriverManager {
 
         UiAutomator2Options options = baseOptions(request);
         options.setNoReset(true);
-//        keepAppRunningAfterSession(options);
         options.setCapability("appium:autoLaunch", true);
         options.setCapability("appium:forceAppLaunch", true);
 
@@ -70,73 +69,36 @@ public class AppiumDriverManager {
         log.info("Starting Appium session to launch app package={} activity={} appPath={}",
                 appPackage, appActivity, appPath);
 
-        AndroidDriver driver = new AndroidDriver(serverUrl(request), options);
+        AndroidDriver driver = new AndroidDriver(adapter.appiumHubUrl(request), options);
         bringAppToForeground(driver, request);
         return driver;
     }
 
     /**
-     * Sauce Labs emulator path: upload the APK under test, start a virtual
-     * device, install that APK, and bring it to the foreground. The ATF
-     * harness is not involved here — it only scans afterward.
+     * Cloud (Sauce Labs / BrowserStack / LambdaTest): upload the app if needed,
+     * start a vendor Appium session, and bring the AUT to the foreground.
      */
-    public AndroidDriver startOnVirtualDevice(ScanRequest request) {
-        String appPath = blankToNull(request.getAppPath());
-        if (appPath == null) {
-            throw new IllegalArgumentException(
-                    "virtualDevice=true requires appPath (local path to the APK under test)");
-        }
-        Path apk = Paths.get(appPath).toAbsolutePath().normalize();
-        if (!Files.isRegularFile(apk)) {
-            throw new IllegalArgumentException("appPath does not exist: " + apk);
-        }
+    public AndroidDriver startOnCloud(ScanRequest request, CloudPlatformAdapter adapter) {
+        adapter.validate(request);
+        String appCap = adapter.resolveAppCapability(request);
 
-        String storageApp = sauceLabsClient.uploadApp(request, apk, apk.getFileName().toString());
-
-        UiAutomator2Options options = virtualBaseOptions(request);
+        UiAutomator2Options options = cloudBaseOptions(request, adapter);
         options.setNoReset(false);
         options.setCapability("appium:dontStopAppOnReset", true);
         options.setCapability("appium:autoLaunch", true);
         options.setCapability("appium:forceAppLaunch", true);
-
-//        HashMap<String, Object> sauceOptions = new HashMap<>();
-//// Check below for the available versions
-//        sauceOptions.put("appiumVersion", "latest");
-//        options.setCapability("sauce:options", sauceOptions);
-
-//        options.setCapability("appiumVersion", "2.0.0");
-        options.setApp(storageApp);
+        if (appCap != null) {
+            options.setApp(appCap);
+        }
         applyAppIdentity(options, request);
 
-        log.info("Starting Sauce Labs virtual session device={} platformVersion={} apk={}",
-                request.getDeviceName(), request.getPlatformVersion(), apk.getFileName());
+        URL hub = adapter.appiumHubUrl(request);
+        log.info("Starting {} Android session device={} platformVersion={} app={} hub={}",
+                adapter.platform(), request.getDeviceName(), request.getPlatformVersion(), appCap, hub);
 
-        AndroidDriver driver = new AndroidDriver(sauceLabsClient.onDemandUrl(request), options);
+        AndroidDriver driver = new AndroidDriver(hub, options);
         bringAppToForeground(driver, request);
         return driver;
-    }
-
-    private UiAutomator2Options virtualBaseOptions(ScanRequest request) {
-        int commandTimeout = Math.max(300, properties.getAmInstrumentTimeoutSeconds() + 120);
-        UiAutomator2Options options = new UiAutomator2Options()
-                .setAutomationName(request.getAutomationName())
-                .setPlatformName(request.getPlatformName())
-                .setDeviceName(request.getDeviceName())
-                .setNewCommandTimeout(Duration.ofSeconds(commandTimeout));
-        String platformVersion = blankToNull(request.getPlatformVersion());
-        if (platformVersion != null) {
-            options.setPlatformVersion(platformVersion);
-        }
-        Map<String, Object> sauceOptions = new LinkedHashMap<>();
-        sauceOptions.put("username", request.getSauceUsername());
-        sauceOptions.put("accessKey", request.getSauceAccessKey());
-//        sauceOptions.put("appiumVersion", "2.11.0");
-        String scanName = request.getAppName() == null || request.getAppName().isBlank()
-                ? "ATF accessibility scan"
-                : "ATF scan: " + request.getAppName();
-        sauceOptions.put("name", scanName);
-        options.setCapability("sauce:options", sauceOptions);
-        return options;
     }
 
     /**
@@ -179,7 +141,7 @@ public class AppiumDriverManager {
         if (sessionId == null || sessionId.isBlank()) {
             throw new IllegalArgumentException("appiumSessionId is required to attach");
         }
-        URL url = serverUrl(request);
+        URL url = cloudPlatformRegistry.resolve(request).appiumHubUrl(request);
         UiAutomator2Options options = baseOptions(request);
         options.setNoReset(true);
 //        keepAppRunningAfterSession(options);
@@ -266,7 +228,7 @@ public class AppiumDriverManager {
         applyAppIdentity(options, request);
 
         log.info("Starting a new UiAutomator2 session after ATF (app stays in foreground)");
-        AndroidDriver driver = new AndroidDriver(serverUrl(request), options);
+        AndroidDriver driver = new AndroidDriver(cloudPlatformRegistry.resolve(request).appiumHubUrl(request), options);
         log.info("UiAutomator2 is running again, package={}", safeCurrentPackage(driver));
         return driver;
     }
@@ -374,6 +336,21 @@ public class AppiumDriverManager {
         return PackageIdentity.fromDumpsys(result.output());
     }
 
+    private UiAutomator2Options cloudBaseOptions(ScanRequest request, CloudPlatformAdapter adapter) {
+        int commandTimeout = Math.max(300, properties.getAmInstrumentTimeoutSeconds() + 120);
+        UiAutomator2Options options = new UiAutomator2Options()
+                .setAutomationName(request.getAutomationName())
+                .setPlatformName(request.getPlatformName())
+                .setDeviceName(request.getDeviceName())
+                .setNewCommandTimeout(Duration.ofSeconds(commandTimeout));
+        String platformVersion = blankToNull(request.getPlatformVersion());
+        if (platformVersion != null) {
+            options.setPlatformVersion(platformVersion);
+        }
+        adapter.applyVendorOptions(options, request);
+        return options;
+    }
+
     private static void keepAppRunningAfterSession(UiAutomator2Options options) {
         options.setCapability("appium:dontStopAppOnReset", true);
         options.setCapability("appium:shouldTerminateApp", false);
@@ -456,7 +433,7 @@ public class AppiumDriverManager {
         applyAppIdentity(options, request);
 
         log.info("Starting a new UiAutomator2 session (autoLaunch=false, app stays as-is)");
-        AndroidDriver driver = new AndroidDriver(serverUrl(request), options);
+        AndroidDriver driver = new AndroidDriver(cloudPlatformRegistry.resolve(request).appiumHubUrl(request), options);
         log.info("UiAutomator2 is running again, foreground package={}", safeCurrentPackage(driver));
         return driver;
     }
@@ -475,18 +452,6 @@ public class AppiumDriverManager {
                 "args", args
         ));
         return raw == null ? "" : String.valueOf(raw);
-    }
-
-    private URL serverUrl(ScanRequest request) {
-        String raw = request.getAppiumServerUrl();
-        if (raw == null || raw.isBlank()) {
-            raw = properties.getAppiumServerUrl();
-        }
-        try {
-            return new URL(raw);
-        } catch (MalformedURLException e) {
-            throw new IllegalArgumentException("Invalid Appium server URL: " + raw, e);
-        }
     }
 
     private static String blankToNull(String value) {

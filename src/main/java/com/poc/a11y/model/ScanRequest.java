@@ -3,6 +3,7 @@ package com.poc.a11y.model;
 import com.fasterxml.jackson.annotation.JsonAlias;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonProperty;
+import com.poc.a11y.cloud.CloudPlatform;
 import io.appium.java_client.AppiumDriver;
 import io.appium.java_client.android.AndroidDriver;
 import io.appium.java_client.ios.IOSDriver;
@@ -72,9 +73,8 @@ public class ScanRequest {
     private boolean closeApp = false;
 
     /**
-     * When true, use a Sauce Labs Android emulator: install the APK at
-     * {@link #appPath}, launch it via Appium, then run the ATF harness.
-     * Physical USB devices leave this false / omitted.
+     * When true, use a Sauce Labs Android emulator. Prefer {@link #cloudPlatform}
+     * ({@code sauceLabs}); this flag is kept so existing payloads still work.
      */
     private boolean virtualDevice = false;
 
@@ -82,8 +82,30 @@ public class ScanRequest {
     private String sauceAccessKey;
     /** Sauce data-center region, e.g. {@code us-west-1}, {@code eu-central-1}, {@code us-east-4}. */
     private String sauceRegion = "eu-central-1";
-    /** Required for Sauce virtual devices (emulator OS version), e.g. {@code 14.0}. */
+    /** Required for cloud devices (OS version), e.g. {@code 14.0}. */
     private String platformVersion;
+
+    /**
+     * Execution target: {@code local} (default), {@code sauceLabs},
+     * {@code browserStack}, {@code lambdaTest}. Omit for USB / FireFlink Client.
+     */
+    private String cloudPlatform;
+
+    /** Cloud vendor username. Falls back to {@link #sauceUsername}. */
+    private String cloudUsername;
+    /** Cloud vendor access key. Falls back to {@link #sauceAccessKey}. */
+    private String cloudAccessKey;
+    /** Cloud region where the vendor uses one (Sauce Labs). Falls back to {@link #sauceRegion}. */
+    private String cloudRegion;
+
+    /** Override FireFlink / application.yml WDA project path (local iOS only). */
+    private String wdaAgentPath;
+    /** Override FireFlink / application.yml WDA folder path (local iOS only). */
+    private String wdaBootstrapPath;
+    private Boolean showXcodeLog;
+    private String xcodeOrgId;
+    private String xcodeSigningId;
+    private String updatedWdaBundleId;
 
     public boolean hasExistingDriver() {
         return existingDriver != null
@@ -118,6 +140,40 @@ public class ScanRequest {
             return "UiAutomator2";
         }
         return automationName;
+    }
+
+    public CloudPlatform resolveCloudPlatform() {
+        if (cloudPlatform != null && !cloudPlatform.isBlank()) {
+            return CloudPlatform.from(cloudPlatform);
+        }
+        if (virtualDevice) {
+            return CloudPlatform.SAUCE_LABS;
+        }
+        return CloudPlatform.LOCAL;
+    }
+
+    public String resolveCloudUsername() {
+        return firstNonBlank(cloudUsername, sauceUsername);
+    }
+
+    public String resolveCloudAccessKey() {
+        return firstNonBlank(cloudAccessKey, sauceAccessKey);
+    }
+
+    public String resolveCloudRegion() {
+        return firstNonBlank(cloudRegion, sauceRegion);
+    }
+
+    private static String firstNonBlank(String... values) {
+        if (values == null) {
+            return null;
+        }
+        for (String value : values) {
+            if (value != null && !value.isBlank()) {
+                return value.trim();
+            }
+        }
+        return null;
     }
 
     public AndroidDriver getExistingAndroidDriver() {

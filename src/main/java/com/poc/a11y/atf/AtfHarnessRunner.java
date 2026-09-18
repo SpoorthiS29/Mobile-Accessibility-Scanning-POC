@@ -3,6 +3,7 @@ package com.poc.a11y.atf;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.poc.a11y.atf.dto.AtfCheckResultDto;
 import com.poc.a11y.atf.dto.AtfScanOutputDto;
+import com.poc.a11y.cloud.CloudPlatformAdapter;
 import com.poc.a11y.model.ScanRequest;
 import io.appium.java_client.android.AndroidDriver;
 import org.slf4j.Logger;
@@ -26,7 +27,7 @@ import java.util.zip.ZipInputStream;
 /**
  * Runs on-device ATF against whatever is already in the foreground.
  * Does not launch or close the app — UiAutomator restart and closeApp
- * are handled by {@link AtfMobileScanService} after the scan.
+ * are handled by the Android scan strategy after the scan.
  */
 @Component
 public class AtfHarnessRunner {
@@ -35,17 +36,14 @@ public class AtfHarnessRunner {
 
     private final AtfProperties properties;
     private final AdbCommandExecutor adb;
-    private final SauceLabsClient sauceLabsClient;
     private final AppiumDriverManager appiumDriverManager;
     private final ObjectMapper objectMapper = new ObjectMapper();
 
     public AtfHarnessRunner(AtfProperties properties,
                             AdbCommandExecutor adb,
-                            SauceLabsClient sauceLabsClient,
                             AppiumDriverManager appiumDriverManager) {
         this.properties = properties;
         this.adb = adb;
-        this.sauceLabsClient = sauceLabsClient;
         this.appiumDriverManager = appiumDriverManager;
     }
 
@@ -87,21 +85,24 @@ public class AtfHarnessRunner {
     }
 
     /**
-     * Same scan as {@link #runScan} (install harness, instrument, save JSON +
-     * shots locally) but over a live Sauce Labs Appium session instead of adb.
-     * Does not launch the app under test — that must already be in the
-     * foreground from {@link AppiumDriverManager#startOnVirtualDevice}.
+     * Same scan as {@link #runScan} but over a live cloud Appium session instead
+     * of adb. Harness APKs are uploaded through the vendor adapter. Does not
+     * launch the app under test — that must already be in the foreground.
      */
-    public AtfScanOutputDto runScanOnVirtualDevice(ScanRequest request, AndroidDriver driver) {
+    public AtfScanOutputDto runScanOnCloud(ScanRequest request, AndroidDriver driver,
+                                           CloudPlatformAdapter adapter) {
         if (driver == null) {
-            throw new IllegalArgumentException("AndroidDriver is required for a virtual-device ATF scan");
+            throw new IllegalArgumentException("AndroidDriver is required for a cloud ATF scan");
         }
-        ensureHarnessInstalledOnVirtualDevice(request, driver);
+        if (adapter == null) {
+            throw new IllegalArgumentException("CloudPlatformAdapter is required for a cloud ATF scan");
+        }
+        ensureHarnessInstalledOnCloud(request, driver, adapter);
         try {
             executeShell(driver, "rm", List.of("-f", properties.getDeviceResultPath()));
             executeShell(driver, "rm", List.of("-rf", properties.getDeviceShotsPath()));
         } catch (RuntimeException e) {
-            log.warn("Could not clear previous ATF files on virtual device: {}", e.getMessage());
+            log.warn("Could not clear previous ATF files on cloud device: {}", e.getMessage());
         }
 
         appiumDriverManager.releaseUiAutomation(driver);
@@ -318,24 +319,28 @@ public class AtfHarnessRunner {
         log.info("{} installed successfully", description);
     }
 
-    private void ensureHarnessInstalledOnVirtualDevice(ScanRequest request, AndroidDriver driver) {
-        installVirtualApkIfNeeded(
+    private void ensureHarnessInstalledOnCloud(ScanRequest request, AndroidDriver driver,
+                                               CloudPlatformAdapter adapter) {
+        installCloudApkIfNeeded(
                 request,
                 driver,
+                adapter,
                 properties.getHarnessPackage(),
                 properties.getHarnessApkPath(),
                 "ATF harness APK");
-        installVirtualApkIfNeeded(
+        installCloudApkIfNeeded(
                 request,
                 driver,
+                adapter,
                 properties.getHarnessTestPackage(),
                 properties.getHarnessTestApkPath(),
                 "ATF instrumentation APK");
     }
 
-    private void installVirtualApkIfNeeded(
+    private void installCloudApkIfNeeded(
             ScanRequest request,
             AndroidDriver driver,
+            CloudPlatformAdapter adapter,
             String packageName,
             String apkPath,
             String description) {
@@ -345,24 +350,17 @@ public class AtfHarnessRunner {
                 executeShell(driver, "dumpsys", List.of("package", packageName)));
         long apkLastModified = apkLastModifiedMs(apk);
         if (!PackageIdentity.needsInstall(installed, desired, apkLastModified)) {
-            log.info("{} is already installed with {} on virtual device — skipping install",
+            log.info("{} is already installed with {} on cloud device — skipping install",
                     description, desired == null ? "unknown version" : desired.displayVersion());
             return;
         }
-        log.info("Installing {} {} on Sauce virtual device (device had {})",
+        log.info("Installing {} {} on {} (device had {})",
                 description,
                 desired == null ? "unknown version" : desired.displayVersion(),
+                adapter.platform(),
                 installed == null ? "nothing / unknown version" : installed.displayVersion());
-        String storageApp = sauceLabsClient.uploadApp(request, apk, apk.getFileName().toString());
-//        driver.executeScript("mobile: installApp", Map.of("appPath", storageApp));
-
+        String storageApp = adapter.uploadApp(request, apk);
         driver.installApp(storageApp);
-//        driver.executeScript("mobile: installMultipleApks", Map.of(
-//                "apks", List.of(storageApp),
-//                "options", Map.of(
-//                        "replace", true
-//                )
-//        ));
     }
 
     private PackageIdentity readApkIdentity(Path apk) {
@@ -461,7 +459,7 @@ public class AtfHarnessRunner {
             return raw == null ? "" : String.valueOf(raw);
         } catch (RuntimeException e) {
             throw new IllegalStateException(
-                    "Sauce Labs virtual devices must allow Appium mobile: shell so the ATF harness "
+                    "Cloud devices must allow Appium mobile: shell so the ATF harness "
                             + "can run after the app is launched (same as adb shell on a physical device). "
                             + command + " failed: " + e.getMessage(), e);
         }

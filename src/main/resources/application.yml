@@ -19,3 +19,12 @@ atf:
   device-result-path: /sdcard/Android/data/com.poc.a11y.atf.harness/files/atf-result.json
   device-shots-path: /sdcard/Android/data/com.poc.a11y.atf.harness/files/shots
   am-instrument-timeout-seconds: 300
+  appium-server-url: http://127.0.0.1:4723
+
+# Local iOS: same WDA project Optimize / FireFlink Client pass as agentPath / bootstrapPath.
+# Ignored on Sauce Labs / BrowserStack / LambdaTest (the vendor hosts WDA).
+ios:
+  wda:
+    agent-path: /Applications/FireFlinkClient.app/Contents/Resources/flinko-client/exec/appium-webdriveragent/WebDriverAgent.xcodeproj
+    bootstrap-path: /Applications/FireFlinkClient.app/Contents/Resources/flinko-client/exec/appium-webdriveragent
+    show-xcode-log: false

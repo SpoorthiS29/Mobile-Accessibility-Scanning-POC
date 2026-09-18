@@ -37,11 +37,14 @@ public class IosAccessibilityAuditor {
 
     private final ObjectMapper objectMapper;
     private final IosIssueScreenshotCropper screenshotCropper;
+    private final IosIssueDeduplicator issueDeduplicator;
 
     public IosAccessibilityAuditor(ObjectMapper objectMapper,
-                                   IosIssueScreenshotCropper screenshotCropper) {
+                                   IosIssueScreenshotCropper screenshotCropper,
+                                   IosIssueDeduplicator issueDeduplicator) {
         this.objectMapper = objectMapper;
         this.screenshotCropper = screenshotCropper;
+        this.issueDeduplicator = issueDeduplicator;
     }
 
     public IosAuditRawOutput run(IOSDriver driver, ScanRequest request) {
@@ -108,11 +111,17 @@ public class IosAccessibilityAuditor {
             previousSourceHash = hash;
         }
 
+        int duplicatesRemoved = issueDeduplicator.dedupeViewports(viewports);
+        if (duplicatesRemoved > 0) {
+            log.info("Removed {} duplicate iOS issue(s) that reappeared across viewports", duplicatesRemoved);
+        }
+
         Map<String, Object> raw = new LinkedHashMap<>();
         raw.put("platform", "iOS");
         raw.put("bundleId", request.resolveBundleId());
         raw.put("deviceName", request.getDeviceName());
         raw.put("viewportCount", viewports.size());
+        raw.put("duplicatesRemoved", duplicatesRemoved);
         raw.put("viewports", viewports);
 
         Path jsonFile = resultsDir.resolve("ios-scan-" + appName + "-" + timestamp + ".json");
