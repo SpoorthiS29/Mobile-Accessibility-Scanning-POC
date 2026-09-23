@@ -32,21 +32,20 @@ public class AtfResultMapper {
      * simply surface with {@code wcagCriterion = null}.
      */
     private static final Map<String, WcagMapping> WCAG_BY_CHECK = Map.ofEntries(
-            Map.entry("TouchTargetSizeCheck", new WcagMapping("2.5.5 Target Size", "AAA")),
-            Map.entry("DuplicateClickableBoundsCheck", new WcagMapping("2.5.5 Target Size", "AAA")),
+            Map.entry("TouchTargetSizeCheck", new WcagMapping("2.5.8 Target Size (Minimum)", "AA")),
+            Map.entry("DuplicateClickableBoundsCheck", new WcagMapping("Best Practice", "AAA")),
             Map.entry("TextContrastCheck", new WcagMapping("1.4.3 Contrast (Minimum)", "AA")),
             Map.entry("ImageContrastCheck", new WcagMapping("1.4.11 Non-text Contrast", "AA")),
-            Map.entry("SpeakableTextPresentCheck", new WcagMapping("4.1.2 Name, Role, Value", "A")),
-            Map.entry("DuplicateSpeakableTextCheck", new WcagMapping("4.1.2 Name, Role, Value", "A")),
+            Map.entry("SpeakableTextPresentCheck", new WcagMapping("1.1.1 Non-text Content", "A")),
+            Map.entry("DuplicateSpeakableTextCheck", new WcagMapping("Best Practice", "A")),
             Map.entry("EditableContentDescCheck", new WcagMapping("4.1.2 Name, Role, Value", "A")),
-            Map.entry("RedundantDescriptionCheck", new WcagMapping("4.1.2 Name, Role, Value", "A")),
+            Map.entry("RedundantDescriptionCheck", new WcagMapping("Best Practice", "A")),
             Map.entry("ClassNameCheck", new WcagMapping("4.1.2 Name, Role, Value", "A")),
-            Map.entry("ClickableSpanCheck", new WcagMapping("2.5.5 Target Size", "AAA")),
-            Map.entry("TraversalOrderCheck", new WcagMapping("1.3.2 Meaningful Sequence", "A")),
+            Map.entry("ClickableSpanCheck", new WcagMapping("4.1.2 Name, Role, Value", "AAA")),
+            Map.entry("TraversalOrderCheck", new WcagMapping("2.4.3 Focus Order", "A")),
             Map.entry("LinkPurposeUnclearCheck", new WcagMapping("2.4.4 Link Purpose (In Context)", "A")),
-            Map.entry("ItemsShouldNotAutoFocusCheck", new WcagMapping("3.2.1 On Focus", "A")),
-            Map.entry("SwitchAccessActionsCheck", new WcagMapping("2.1.1 Keyboard", "A")),
-            Map.entry("SwitchAccessScrollableViewCheck", new WcagMapping("2.1.1 Keyboard", "A"))
+            Map.entry("TextSizeCheck", new WcagMapping("Best Practice", "A")),
+            Map.entry("UnexposedTextCheck", new WcagMapping("1.1.1 Non-text Content", "A"))
     );
 
     public List<Issue> toIssues(AtfScanOutputDto output) {

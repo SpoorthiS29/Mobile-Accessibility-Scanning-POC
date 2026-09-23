@@ -1,0 +1,11 @@
+{
+  "platform" : "iOS",
+  "bundleId" : "com.saucelabs.SwagLabsMobileApp",
+  "deviceName" : "iPhone 18 Pro Simulator",
+  "viewportCount" : 1,
+  "duplicatesRemoved" : 0,
+  "viewports" : [ {
+    "index" : 0,
+    "issues" : [ ]
+  } ]
+}
