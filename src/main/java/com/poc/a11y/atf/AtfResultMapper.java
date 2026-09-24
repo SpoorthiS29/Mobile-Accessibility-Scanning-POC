@@ -45,7 +45,9 @@ public class AtfResultMapper {
             Map.entry("TraversalOrderCheck", new WcagMapping("2.4.3 Focus Order", "A")),
             Map.entry("LinkPurposeUnclearCheck", new WcagMapping("2.4.4 Link Purpose (In Context)", "A")),
             Map.entry("TextSizeCheck", new WcagMapping("Best Practice", "A")),
-            Map.entry("UnexposedTextCheck", new WcagMapping("1.1.1 Non-text Content", "A"))
+            Map.entry("UnexposedTextCheck", new WcagMapping("1.1.1 Non-text Content", "A")),
+            Map.entry("LabelInNameMismatchCheck", new WcagMapping("2.5.3 Label in Name", "A")),
+            Map.entry("UnannouncedFormErrorCheck", new WcagMapping("3.3.1 Error Identification", "A"))
     );
 
     public List<Issue> toIssues(AtfScanOutputDto output) {

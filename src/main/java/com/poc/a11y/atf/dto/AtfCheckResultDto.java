@@ -29,4 +29,6 @@ public class AtfCheckResultDto {
 
     private AtfElementDto element;
 
+    private int viewport;
+
 }

@@ -1,0 +1,46 @@
+{
+  "density" : 2.625,
+  "resultCount" : 2,
+  "viewportCount" : 1,
+  "results" : [ {
+    "checkClass" : "TextContrastCheck",
+    "checkOriginalClass" : "com.google.android.apps.common.testing.accessibility.framework.checks.TextContrastCheck",
+    "type" : "WARNING",
+    "resultId" : 11,
+    "message" : "The item's text contrast ratio is 2.61. This ratio is based on an estimated foreground color of #8B3504 and an estimated background color of #000000. Consider increasing this item's text contrast ratio to 4.50 or greater.",
+    "screenshotFile" : "C:\\Users\\User\\Downloads\\mobile-a11y-poc\\atf-results\\atf-scan-wdio-20260923_232618-shots\\shots\\issue-0001.png",
+    "element" : {
+      "className" : "android.widget.TextView",
+      "resourceName" : "",
+      "contentDescription" : "",
+      "text" : "Home",
+      "clickable" : false,
+      "enabled" : true,
+      "left" : 41,
+      "top" : 2273,
+      "right" : 139,
+      "bottom" : 2337
+    },
+    "viewport" : 0
+  }, {
+    "checkClass" : "RedundantDescriptionCheck",
+    "checkOriginalClass" : "com.google.android.apps.common.testing.accessibility.framework.checks.RedundantDescriptionCheck",
+    "type" : "WARNING",
+    "resultId" : 8,
+    "message" : "This item's content description, \"Swipe\", contains the action \"swipe\".",
+    "screenshotFile" : "C:\\Users\\User\\Downloads\\mobile-a11y-poc\\atf-results\\atf-scan-wdio-20260923_232618-shots\\shots\\issue-0002.png",
+    "element" : {
+      "className" : "android.view.View",
+      "resourceName" : "",
+      "contentDescription" : "Swipe",
+      "text" : "",
+      "clickable" : true,
+      "enabled" : true,
+      "left" : 720,
+      "top" : 2206,
+      "right" : 900,
+      "bottom" : 2337
+    },
+    "viewport" : 0
+  } ]
+}
