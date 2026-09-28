@@ -53,8 +53,8 @@ final class AtfIssueRecord {
     // COMMON RESULT DATA
     // ============================================================
 
-    /** Relative path to the cropped screenshot, if available. */
-    String screenshotFile;
+    /** Raw base64 PNG of the cropped screenshot, if available. Never a file path. */
+    String screenshot;
 
     /** Where the widget actually was when the screenshot was taken. */
     Rect capturedBounds;
@@ -74,10 +74,10 @@ final class AtfIssueRecord {
     // ============================================================
 
     AtfIssueRecord(AccessibilityHierarchyCheckResult result,
-                   String screenshotFile) {
+                   String screenshot) {
 
         this.result = result;
-        this.screenshotFile = screenshotFile;
+        this.screenshot = screenshot;
     }
 
 

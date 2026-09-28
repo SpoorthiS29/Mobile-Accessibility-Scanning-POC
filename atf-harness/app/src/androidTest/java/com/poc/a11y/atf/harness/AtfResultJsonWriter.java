@@ -132,12 +132,7 @@ final class AtfResultJsonWriter {
                 record.getViewport()
         );
 
-        if (record.screenshotFile != null) {
-            node.put(
-                    "screenshotFile",
-                    record.screenshotFile
-            );
-        }
+        putScreenshot(node, record);
 
         ViewHierarchyElement element = result.getElement();
 
@@ -194,12 +189,7 @@ final class AtfResultJsonWriter {
                 record.getViewport()
         );
 
-        if (record.screenshotFile != null) {
-            node.put(
-                    "screenshotFile",
-                    record.screenshotFile
-            );
-        }
+        putScreenshot(node, record);
 
         ViewHierarchyElement element = record.getElement();
         if (element != null) {
@@ -302,6 +292,14 @@ final class AtfResultJsonWriter {
         return json;
     }
 
+
+    private static void putScreenshot(JSONObject node, AtfIssueRecord record)
+            throws JSONException {
+        if (record.screenshot == null || record.screenshot.isBlank()) {
+            return;
+        }
+        node.put("screenshot", record.screenshot);
+    }
 
     private static String nullToEmpty(CharSequence cs) {
         return cs == null ? "" : cs.toString();

@@ -11,6 +11,7 @@
     import android.os.Bundle;
     import android.os.ParcelFileDescriptor;
     import android.os.SystemClock;
+    import android.util.Base64;
     import android.util.DisplayMetrics;
     import android.util.Log;
     import android.view.Display;
@@ -36,6 +37,7 @@
     import org.junit.Test;
     import org.junit.runner.RunWith;
 
+    import java.io.ByteArrayOutputStream;
     import java.io.File;
     import java.io.FileOutputStream;
     import java.io.OutputStreamWriter;
@@ -44,7 +46,6 @@
     import java.util.ArrayList;
     import java.util.Collections;
     import java.util.HashMap;
-    import java.util.HashSet;
     import java.util.LinkedHashSet;
     import java.util.List;
     import java.util.Locale;
@@ -64,12 +65,14 @@
      * Crops include surrounding context plus a red highlight on the failing widget,
      * positioned from bounds sampled next to the screenshot rather than from the
      * ATF snapshot, because Amazon's web feed repaints while the checks run.
+     * Each crop is compressed in memory and stored on the finding as raw base64
+     * PNG. No screenshot file is written on the device; the result JSON is the
+     * only artifact, and it already contains those base64 strings.
      * Per-viewport custom checks (see {@link CustomHierarchyChecks}) run
      * after ATF on the same hierarchy, still inside the scroll loop. ATF
      * findings are cropped after the preset batch. Custom findings are
-     * cropped in the same node walk that flags them; after custom dedup,
-     * crops that belong only to dropped duplicates are deleted. Both
-     * lists are then appended to the merged result.
+     * cropped in the same node walk that flags them. Dropped duplicates are
+     * omitted from the JSON. Both lists are then appended to the merged result.
      *
      * <p>This class does not launch the app under test. The Spring Boot / Appium
      * side must already have the target UI in the foreground (physical USB device
@@ -80,7 +83,6 @@
 
         private static final String TAG = "AtfScanTest";
         static final String RESULT_FILE_NAME = "atf-result.json";
-        static final String SHOTS_DIR_NAME = "shots";
 
         /**
          * After the first viewport, only keep findings whose center is below this
@@ -156,12 +158,10 @@
             if (filesDir == null) {
                 throw new IllegalStateException("getExternalFilesDir(null) returned null; cannot write ATF output");
             }
-            File shotsDir = prepareShotsDir(filesDir);
 
             List<AtfIssueRecord> merged = new ArrayList<>();
             Set<String> seenIssueKeys = new LinkedHashSet<>();
             int viewports = 0;
-            int nextShotIndex = 1;
             int unchangedStreak = 0;
 
             long cumulativeScrollPx = 0L;
@@ -212,23 +212,21 @@
                         record.setViewport(pass);
                     }
                     Map<String, String> cropByElement = new HashMap<>();
-                    nextShotIndex = attachCrops(screenshot, atfAdded, shotsDir, realMetrics,
-                            nextShotIndex, capturedBounds, cropByElement);
+                    attachCrops(screenshot, atfAdded, realMetrics, capturedBounds, cropByElement);
 
                     // Custom: crop each finding in the same walk that flags it.
-                    // Dedup then deletes crops that only dropped duplicates used.
+                    // Dropped duplicates are left out of the JSON, so their
+                    // in-memory crops are never written anywhere.
                     ImmediateCropper cropper = new ImmediateCropper(
-                            screenshot, shotsDir, realMetrics, capturedBounds, cropByElement, nextShotIndex);
+                            screenshot, realMetrics, capturedBounds, cropByElement);
                     List<AtfIssueRecord> alreadyKept = new ArrayList<>(merged);
                     alreadyKept.addAll(atfAdded);
                     List<AtfIssueRecord> customFindings = runCustomHierarchyChecks(hierarchy, cropper);
-                    nextShotIndex = cropper.nextIndex();
                     List<AtfIssueRecord> customAdded = mergeCustomNew(
                             seenIssueKeys, alreadyKept, customFindings, cumulativeScrollPx);
                     int beforeCustomNested = customAdded.size();
                     customAdded = dropNestedDuplicates(customAdded, alreadyKept);
                     int afterCustomNested = customAdded.size();
-                    deleteOrphanedCustomShots(customFindings, customAdded, alreadyKept, shotsDir);
                     for (AtfIssueRecord record : customAdded) {
                         record.setViewport(pass);
                     }
@@ -501,21 +499,19 @@
 
         /**
          * Crops the failing widget with surrounding context and a red highlight.
-         * Same element in this viewport reuses one PNG when several checks fire
-         * on it ({@code cropByElement} is shared between the ATF pass and
+         * Same element in this viewport reuses one base64 PNG when several checks
+         * fire on it ({@code cropByElement} is shared between the ATF pass and
          * immediate custom crops). ATF findings whose widget cannot be located
          * in the bounds sampled alongside the screenshot get no image — a
          * wrong crop is worse than a missing one.
          */
-        private int attachCrops(Bitmap screenshot,
-                                List<AtfIssueRecord> added,
-                                File shotsDir,
-                                DisplayMetrics metrics,
-                                int nextShotIndex,
-                                Map<String, List<Rect>> capturedBounds,
-                                Map<String, String> cropByElement) {
+        private void attachCrops(Bitmap screenshot,
+                                 List<AtfIssueRecord> added,
+                                 DisplayMetrics metrics,
+                                 Map<String, List<Rect>> capturedBounds,
+                                 Map<String, String> cropByElement) {
             if (screenshot == null || added.isEmpty()) {
-                return nextShotIndex;
+                return;
             }
             if (cropByElement == null) {
                 cropByElement = new HashMap<>();
@@ -523,32 +519,27 @@
             Log.i(TAG, "Screenshot " + screenshot.getWidth() + "x" + screenshot.getHeight()
                     + " realDisplay=" + metrics.widthPixels + "x" + metrics.heightPixels
                     + " cropScale=" + screenshotScale(screenshot, metrics));
-            int index = nextShotIndex;
             for (AtfIssueRecord record : added) {
-                index = attachOneCrop(screenshot, record, shotsDir, metrics, index,
-                        capturedBounds, cropByElement, false);
+                attachOneCrop(screenshot, record, metrics, capturedBounds, cropByElement, false);
             }
-            return index;
         }
 
         /**
          * Crops one finding. Custom checks pass {@code allowHierarchyFallback}
          * so the node's own bounds are used when the live snapshot missed it.
          */
-        private int attachOneCrop(Bitmap screenshot,
-                                  AtfIssueRecord record,
-                                  File shotsDir,
-                                  DisplayMetrics metrics,
-                                  int nextShotIndex,
-                                  Map<String, List<Rect>> capturedBounds,
-                                  Map<String, String> cropByElement,
-                                  boolean allowHierarchyFallback) {
+        private void attachOneCrop(Bitmap screenshot,
+                                   AtfIssueRecord record,
+                                   DisplayMetrics metrics,
+                                   Map<String, List<Rect>> capturedBounds,
+                                   Map<String, String> cropByElement,
+                                   boolean allowHierarchyFallback) {
             if (screenshot == null || record == null) {
-                return nextShotIndex;
+                return;
             }
             ViewHierarchyElement el = record.getElement();
             if (el == null) {
-                return nextShotIndex;
+                return;
             }
             String identity = elementIdentity(el);
             Rect live = resolveCapturedBounds(el, identity, capturedBounds);
@@ -557,21 +548,19 @@
             }
             if (live == null) {
                 Log.w(TAG, "Skipping crop — widget not stable at capture time: " + identity);
-                return nextShotIndex;
+                return;
             }
             record.capturedBounds = live;
             String existing = cropByElement.get(identity);
             if (existing != null) {
-                record.screenshotFile = existing;
-                return nextShotIndex;
+                record.screenshot = existing;
+                return;
             }
-            String file = cropElement(screenshot, live, shotsDir, metrics, nextShotIndex);
-            if (file != null) {
-                record.screenshotFile = file;
-                cropByElement.put(identity, file);
-                return nextShotIndex + 1;
+            String encoded = cropElement(screenshot, live, metrics);
+            if (encoded != null) {
+                record.screenshot = encoded;
+                cropByElement.put(identity, encoded);
             }
-            return nextShotIndex;
         }
 
         private Rect hierarchyScreenBounds(ViewHierarchyElement el) {
@@ -589,79 +578,26 @@
             return rect;
         }
 
-        /**
-         * Deletes crop files written for custom findings that did not survive
-         * identity / spatial / nested dedup, unless another kept issue still
-         * points at the same PNG.
-         */
-        private void deleteOrphanedCustomShots(List<AtfIssueRecord> candidates,
-                                               List<AtfIssueRecord> survivors,
-                                               List<AtfIssueRecord> alsoKeep,
-                                               File shotsDir) {
-            Set<String> keep = new HashSet<>();
-            collectShotNames(survivors, keep);
-            collectShotNames(alsoKeep, keep);
-            Set<String> produced = new HashSet<>();
-            collectShotNames(candidates, produced);
-            for (String name : produced) {
-                if (keep.contains(name)) {
-                    continue;
-                }
-                File file = new File(shotsDir, name);
-                if (!file.exists()) {
-                    continue;
-                }
-                if (file.delete()) {
-                    Log.i(TAG, "Deleted orphaned custom crop " + name);
-                } else {
-                    Log.w(TAG, "Could not delete orphaned custom crop " + file.getAbsolutePath());
-                }
-            }
-        }
-
-        private static void collectShotNames(List<AtfIssueRecord> records, Set<String> out) {
-            if (records == null) {
-                return;
-            }
-            for (AtfIssueRecord record : records) {
-                if (record == null || record.screenshotFile == null || record.screenshotFile.isBlank()) {
-                    continue;
-                }
-                out.add(new File(record.screenshotFile).getName());
-            }
-        }
-
         /** Immediate crop used by custom checks while they still have the node. */
         private final class ImmediateCropper implements ViewportCropper {
             private final Bitmap screenshot;
-            private final File shotsDir;
             private final DisplayMetrics metrics;
             private final Map<String, List<Rect>> capturedBounds;
             private final Map<String, String> cropByElement;
-            private int nextShotIndex;
 
             ImmediateCropper(Bitmap screenshot,
-                             File shotsDir,
                              DisplayMetrics metrics,
                              Map<String, List<Rect>> capturedBounds,
-                             Map<String, String> cropByElement,
-                             int nextShotIndex) {
+                             Map<String, String> cropByElement) {
                 this.screenshot = screenshot;
-                this.shotsDir = shotsDir;
                 this.metrics = metrics;
                 this.capturedBounds = capturedBounds;
                 this.cropByElement = cropByElement;
-                this.nextShotIndex = nextShotIndex;
             }
 
             @Override
             public void crop(AtfIssueRecord record) {
-                nextShotIndex = attachOneCrop(screenshot, record, shotsDir, metrics,
-                        nextShotIndex, capturedBounds, cropByElement, true);
-            }
-
-            int nextIndex() {
-                return nextShotIndex;
+                attachOneCrop(screenshot, record, metrics, capturedBounds, cropByElement, true);
             }
         }
 
@@ -699,11 +635,13 @@
             return best;
         }
 
+        /**
+         * Crops and highlights one widget, then returns raw base64 PNG.
+         * Nothing is written to disk.
+         */
         private String cropElement(Bitmap full,
                                    Rect bounds,
-                                   File shotsDir,
-                                   DisplayMetrics metrics,
-                                   int index) {
+                                   DisplayMetrics metrics) {
             if (full.isRecycled()) {
                 return null;
             }
@@ -729,15 +667,15 @@
             }
             Bitmap crop = Bitmap.createBitmap(full, left, top, width, height);
             Bitmap marked = highlightElement(crop, elLeft - left, elTop - top, elRight - left, elBottom - top);
-            String relative = SHOTS_DIR_NAME + "/" + String.format(Locale.US, "issue-%04d.png", index);
-            File out = new File(shotsDir, String.format(Locale.US, "issue-%04d.png", index));
-            try (FileOutputStream fos = new FileOutputStream(out)) {
-                if (!marked.compress(Bitmap.CompressFormat.PNG, 100, fos)) {
-                    Log.w(TAG, "Failed to compress crop " + out.getName());
+            try {
+                ByteArrayOutputStream buffer = new ByteArrayOutputStream();
+                if (!marked.compress(Bitmap.CompressFormat.PNG, 100, buffer)) {
+                    Log.w(TAG, "Failed to compress crop");
                     return null;
                 }
+                return Base64.encodeToString(buffer.toByteArray(), Base64.NO_WRAP);
             } catch (Exception e) {
-                Log.w(TAG, "Failed to write crop " + out.getAbsolutePath(), e);
+                Log.w(TAG, "Failed to encode crop as base64", e);
                 return null;
             } finally {
                 if (marked != crop && !marked.isRecycled()) {
@@ -747,7 +685,6 @@
                     crop.recycle();
                 }
             }
-            return relative;
         }
 
         private Bitmap highlightElement(Bitmap crop, int left, int top, int right, int bottom) {
@@ -768,23 +705,6 @@
             int y2 = clamp(bottom, y1 + 1, marked.getHeight());
             canvas.drawRect(x1, y1, x2, y2, paint);
             return marked;
-        }
-
-        private File prepareShotsDir(File filesDir) {
-            File shotsDir = new File(filesDir, SHOTS_DIR_NAME);
-            if (shotsDir.exists()) {
-                File[] existing = shotsDir.listFiles();
-                if (existing != null) {
-                    for (File file : existing) {
-                        if (!file.delete()) {
-                            Log.w(TAG, "Could not delete stale crop " + file.getAbsolutePath());
-                        }
-                    }
-                }
-            } else if (!shotsDir.mkdirs()) {
-                throw new IllegalStateException("Could not create shots directory " + shotsDir.getAbsolutePath());
-            }
-            return shotsDir;
         }
 
         private static int clamp(int value, int min, int max) {
