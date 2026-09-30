@@ -56,9 +56,13 @@
      * Scans the already-visible app with real ATF. Scrolls nearly a full page with
      * a small overlap so rows are not skipped, and dedupes by check + element
      * identity (resource / label when present; quantized position for unlabeled
-     * siblings) so the same widget is not reported twice after a swipe. Sticky
-     * chrome that repaints with a slightly different label is also collapsed by
-     * bounds overlap. Clipped / zero-area nodes and edge slivers are dropped.
+     * siblings) so the same widget is not reported twice after a swipe. Findings
+     * still on screen in the next viewport are matched to the previous capture
+     * by the measured scroll. The scroll distance is taken from the screenshot
+     * when element tracking is ambiguous, so the same widget is not reported
+     * again after a short nudge or a clipped row. Repeated labels stay distinct.
+     * Sticky chrome that stays put is collapsed by bounds overlap.
+     * Clipped / zero-area nodes and edge slivers are dropped.
      * A parent card and the distinct widgets inside it (image, title, price)
      * stay as separate issues; only near-identical bounds of the same check
      * are treated as the same widget.
@@ -73,6 +77,8 @@
      * findings are cropped after the preset batch. Custom findings are
      * cropped in the same node walk that flags them. Dropped duplicates are
      * omitted from the JSON. Both lists are then appended to the merged result.
+     * Once scanning finishes, the screen is scrolled back to the starting
+     * viewport so later steps see the top of the page.
      *
      * <p>This class does not launch the app under test. The Spring Boot / Appium
      * side must already have the target UI in the foreground (physical USB device
@@ -97,6 +103,21 @@
         /** Same check + class with this IoU against an already-kept finding is a sticky duplicate. */
         private static final float SPATIAL_DEDUPE_IOU = 0.65f;
 
+        /**
+         * A widget may miss the measured scroll by this many pixels and still be
+         * the same element. Kept below a typical list-row pitch so the next
+         * identical row is not swallowed.
+         */
+        private static final int SCROLL_MATCH_SLACK_PX = 64;
+
+        /**
+         * Same-sized widget may sit this far from its previous document position
+         * when the label changed. A second widget this much farther away keeps
+         * the two rows distinct.
+         */
+        private static final int DOCUMENT_CENTER_MATCH_PX = 48;
+        private static final int DOCUMENT_CENTER_RIVAL_GAP_PX = 72;
+
         /** Context around the failing widget so the crop is recognizable. */
         private static final int CROP_PADDING_PX = 48;
 
@@ -105,7 +126,7 @@
         private static final int MIN_CROP_HEIGHT_PX = 160;
 
         /** Nodes thinner than this (px) are clipped at the fold and produce sliver crops. */
-        private static final int MIN_VISIBLE_EDGE_PX = 8;
+        private static final int MIN_VISIBLE_EDGE_PX = 2;
 
         /** Edge-hugging strips narrower than this are carousel leftovers, not real widgets. */
         private static final int EDGE_SLIVER_PX = 80;
@@ -118,10 +139,11 @@
 
         /** Matched pairs below this delta are treated as sticky chrome, not scroll. */
         private static final long MIN_MEANINGFUL_SHIFT_PX = 20;
-        /** Need at least this many unambiguous matches to trust the measured median. */
-        private static final int MIN_SHIFT_SAMPLES = 3;
-        /** Fallback estimate (fraction of screen height) when too few elements survive the scroll unchanged. */
-        private static final float DEFAULT_SHIFT_FRACTION = 0.55f;
+        /**
+         * Fallback estimate (fraction of screen height) when element tracking cannot
+         * see the scroll. Matches the finger travel of the 0.85 → 0.35 swipe.
+         */
+        private static final float DEFAULT_SHIFT_FRACTION = 0.50f;
 
         //Orientation
         /** WCAG 1.3.4 Orientation custom check. */
@@ -133,6 +155,8 @@
         /** Time allowed for the foreground application to settle after rotation. */
         private static final long ORIENTATION_SETTLE_MS = 1200L;
 
+        private static final int STABLE_BOUNDS_TOLERANCE_PX = 3;
+
         @Test
         public void runAtfScanAndDumpJson() throws Exception {
             Instrumentation instrumentation = InstrumentationRegistry.getInstrumentation();
@@ -142,8 +166,7 @@
             DisplayMetrics metrics = context.getResources().getDisplayMetrics();
             DisplayMetrics realMetrics = realDisplayMetrics(context, metrics);
 
-            boolean scrollToEnd = parseBoolean(args.getString("scrollToEnd"), false);
-            int maxScrolls = Math.max(1, parseInt(args.getString("maxScrolls"), 12));
+            int scrollCount = Math.max(0, parseInt(args.getString("scrollCount"), 0));
 
             ImmutableSet<AccessibilityHierarchyCheck> checks =
                     AccessibilityCheckPreset.getAccessibilityHierarchyChecksForPreset(
@@ -163,13 +186,20 @@
             Set<String> seenIssueKeys = new LinkedHashSet<>();
             int viewports = 0;
             int unchangedStreak = 0;
+            int scrollsPerformed = 0;
+            String originFingerprint = null;
 
             long cumulativeScrollPx = 0L;
             Map<String, List<Rect>> previousPositionlessBounds = null;
+            VisualColumn previousVisual = null;
+            List<ElementSighting> previousSightings = new ArrayList<>();
 
-            // maxScrolls = max scroll advances after the first viewport (max viewports = maxScrolls + 1).
-            for (int pass = 0; pass <= maxScrolls; pass++) {
+            // scrollCount = max scroll advances after the first viewport (max viewports = scrollCount + 1).
+            for (int pass = 0; pass <= scrollCount; pass++) {
                 settleBeforeCapture(uiAutomation, realMetrics, pass == 0);
+                if (pass == 0) {
+                    originFingerprint = contentFingerprint(uiAutomation, realMetrics);
+                }
                 // Sample bounds on both sides of the screenshot and keep only the
                 // rects that did not move: anything still animating cannot be
                 // cropped truthfully from this bitmap.
@@ -179,12 +209,22 @@
 
                 Bitmap screenshot = uiAutomation.takeScreenshot();
                 Map<String, List<Rect>> capturedBounds = stableBounds(boundsBefore, snapshotBounds(uiAutomation));
+                VisualColumn visual = sampleVisual(screenshot, realMetrics);
 
+                long shiftThisPass = 0L;
                 if (previousPositionlessBounds != null) {
-                    long shift = measureVerticalShift(previousPositionlessBounds, positionlessBounds, realMetrics.heightPixels);
-                    cumulativeScrollPx += shift;
-                    Log.i(TAG, "Viewport " + (pass + 1) + " scroll shift: " + shift + "px (cumulative=" + cumulativeScrollPx + "px)");
+                    ShiftEstimate tracked = measureVerticalShift(
+                            previousPositionlessBounds, positionlessBounds,
+                            realMetrics.widthPixels, realMetrics.heightPixels);
+                    Long visualShift = measureVisualShift(
+                            previousVisual, visual, realMetrics.heightPixels);
+                    shiftThisPass = chooseScrollShift(
+                            tracked, visualShift, realMetrics.heightPixels, pass + 1);
+                    cumulativeScrollPx += shiftThisPass;
+                    Log.i(TAG, "Viewport " + (pass + 1) + " cumulative scroll "
+                            + cumulativeScrollPx + "px");
                 }
+                previousVisual = visual;
                 previousPositionlessBounds = positionlessBounds;
 
                 AccessibilityHierarchyAndroid hierarchy = buildHierarchy(uiAutomation, context, pass == 0);
@@ -204,7 +244,8 @@
 
                     List<AtfIssueRecord> atfAdded = mergeNew(
                             seenIssueKeys, merged, batch, cumulativeScrollPx,
-                            realMetrics.widthPixels, realMetrics.heightPixels);
+                            realMetrics.widthPixels, realMetrics.heightPixels,
+                            previousSightings, shiftThisPass);
                     int beforeNested = atfAdded.size();
                     atfAdded = dropNestedDuplicates(atfAdded, merged);
                     int afterNested = atfAdded.size();
@@ -223,7 +264,11 @@
                     alreadyKept.addAll(atfAdded);
                     List<AtfIssueRecord> customFindings = runCustomHierarchyChecks(hierarchy, cropper);
                     List<AtfIssueRecord> customAdded = mergeCustomNew(
-                            seenIssueKeys, alreadyKept, customFindings, cumulativeScrollPx);
+                            seenIssueKeys, alreadyKept, customFindings, cumulativeScrollPx,
+                            previousSightings, shiftThisPass, realMetrics.heightPixels);
+                    List<ElementSighting> thisPassSightings = sightingsFromResults(batch);
+                    thisPassSightings.addAll(sightingsFromRecords(customFindings));
+                    previousSightings = thisPassSightings;
                     int beforeCustomNested = customAdded.size();
                     customAdded = dropNestedDuplicates(customAdded, alreadyKept);
                     int afterCustomNested = customAdded.size();
@@ -250,7 +295,7 @@
                     }
                 }
 
-                if (!scrollToEnd || pass >= maxScrolls) {
+                if (pass >= scrollCount) {
                     break;
                 }
 
@@ -269,6 +314,7 @@
                 boolean moved = advanceScroll(uiAutomation, realMetrics, fingerprint);
                 if (moved) {
                     unchangedStreak = 0;
+                    scrollsPerformed++;
                 } else {
                     unchangedStreak++;
                     Log.i(TAG, "Scroll produced no new content (streak=" + unchangedStreak + ")");
@@ -283,12 +329,16 @@
             // CUSTOM CHECK — WCAG 1.3.4 Orientation
             // ============================================================
 
-            AtfIssueRecord orientationResult =
-                    runOrientationCheck(uiAutomation);
+            try {
+                AtfIssueRecord orientationResult = runOrientationCheck(uiAutomation);
 
-            if (orientationResult != null) {
-                orientationResult.setViewport(0);
-                merged.add(orientationResult);
+                if (orientationResult != null) {
+                    orientationResult.setViewport(0);
+                    merged.add(orientationResult);
+                }
+            } finally {
+                scrollBackToTop(uiAutomation, realDisplayMetrics(context, metrics),
+                        originFingerprint, scrollsPerformed);
             }
 
             String json = AtfResultJsonWriter.toJson(merged, metrics.density, viewports);
@@ -360,8 +410,11 @@
                                               List<AccessibilityHierarchyCheckResult> batch,
                                               long cumulativeScrollPx,
                                               int screenWidth,
-                                              int screenHeight) {
+                                              int screenHeight,
+                                              List<ElementSighting> previousSightings,
+                                              long shiftThisPass) {
             List<AtfIssueRecord> added = new ArrayList<>();
+            int overlapDropped = 0;
             for (AccessibilityHierarchyCheckResult result : batch) {
                 AccessibilityCheckResultType type = result.getType();
                 if (type == AccessibilityCheckResultType.NOT_RUN || type == AccessibilityCheckResultType.SUPPRESSED) {
@@ -383,9 +436,27 @@
                 if (seenIssueKeys.contains(screenKey) || seenIssueKeys.contains(docKey)) {
                     continue;
                 }
+                String checkName = result.getSourceCheckClass() == null
+                        ? ""
+                        : result.getSourceCheckClass().getSimpleName();
+                if (seenInPreviousViewport(checkName, type, el,
+                        previousSightings, shiftThisPass, screenHeight)) {
+                    overlapDropped++;
+                    continue;
+                }
+                // Docked header: first viewport had it below other content, later
+                // viewports pin it to the top. Remember that screen slot so the
+                // following viewport matches the screen key instead of reporting
+                // the same control again.
+                if (isPinnedStickyDuplicate(checkName, type, el,
+                        previousSightings, shiftThisPass, screenHeight)) {
+                    seenIssueKeys.add(screenKey);
+                    overlapDropped++;
+                    continue;
+                }
                 Rect docBounds = el != null ? documentBounds(el, cumulativeScrollPx) : null;
-                if (hasSpatialDuplicate(result, el, docBounds, alreadyKept)
-                        || hasSpatialDuplicate(result, el, docBounds, added)) {
+                if (hasSpatialDuplicate(result, el, docBounds, alreadyKept, true)
+                        || hasSpatialDuplicate(result, el, docBounds, added, false)) {
                     continue;
                 }
                 seenIssueKeys.add(screenKey);
@@ -393,6 +464,10 @@
                 AtfIssueRecord record = new AtfIssueRecord(result, null);
                 record.documentBounds = docBounds;
                 added.add(record);
+            }
+            if (overlapDropped > 0) {
+                Log.i(TAG, "Dropped " + overlapDropped
+                        + " finding(s) already seen in the previous viewport");
             }
             return added;
         }
@@ -407,8 +482,12 @@
         private List<AtfIssueRecord> mergeCustomNew(Set<String> seenIssueKeys,
                                                     List<AtfIssueRecord> alreadyKept,
                                                     List<AtfIssueRecord> candidates,
-                                                    long cumulativeScrollPx) {
+                                                    long cumulativeScrollPx,
+                                                    List<ElementSighting> previousSightings,
+                                                    long shiftThisPass,
+                                                    int screenHeight) {
             List<AtfIssueRecord> added = new ArrayList<>();
+            int overlapDropped = 0;
             for (AtfIssueRecord record : candidates) {
                 if (record == null) {
                     continue;
@@ -426,11 +505,22 @@
                 if (seenIssueKeys.contains(screenKey) || seenIssueKeys.contains(docKey)) {
                     continue;
                 }
+                if (seenInPreviousViewport(record.getCheckClassName(), type, el,
+                        previousSightings, shiftThisPass, screenHeight)) {
+                    overlapDropped++;
+                    continue;
+                }
+                if (isPinnedStickyDuplicate(record.getCheckClassName(), type, el,
+                        previousSightings, shiftThisPass, screenHeight)) {
+                    seenIssueKeys.add(screenKey);
+                    overlapDropped++;
+                    continue;
+                }
                 Rect docBounds = el != null ? documentBounds(el, cumulativeScrollPx) : null;
-                if (hasSpatialDuplicate(record.getCheckClassName(), type, record.getResultIdValue(),
-                        el, docBounds, alreadyKept)
-                        || hasSpatialDuplicate(record.getCheckClassName(), type, record.getResultIdValue(),
-                        el, docBounds, added)) {
+                if (hasSpatialDuplicate(record.getCheckClassName(), type,
+                        el, docBounds, alreadyKept, true)
+                        || hasSpatialDuplicate(record.getCheckClassName(), type,
+                        el, docBounds, added, false)) {
                     continue;
                 }
                 seenIssueKeys.add(screenKey);
@@ -438,37 +528,43 @@
                 record.documentBounds = docBounds;
                 added.add(record);
             }
+            if (overlapDropped > 0) {
+                Log.i(TAG, "Dropped " + overlapDropped
+                        + " custom finding(s) already seen in the previous viewport");
+            }
             return added;
         }
 
         private boolean hasSpatialDuplicate(AccessibilityHierarchyCheckResult result,
                                             ViewHierarchyElement el,
                                             Rect docBounds,
-                                            List<AtfIssueRecord> kept) {
+                                            List<AtfIssueRecord> kept,
+                                            boolean acrossViewports) {
             return hasSpatialDuplicate(
                     result.getSourceCheckClass().getSimpleName(),
                     result.getType(),
-                    result.getResultId(),
                     el,
                     docBounds,
-                    kept);
+                    kept,
+                    acrossViewports);
         }
 
         private boolean hasSpatialDuplicate(String check,
                                             AccessibilityCheckResultType type,
-                                            int resultId,
                                             ViewHierarchyElement el,
                                             Rect docBounds,
-                                            List<AtfIssueRecord> kept) {
+                                            List<AtfIssueRecord> kept,
+                                            boolean acrossViewports) {
             if (el == null || kept == null || kept.isEmpty()) {
                 return false;
             }
             var atfBounds = el.getBoundsInScreen();
             String className = nullToEmpty(el.getClassName());
+            int bestDocDy = Integer.MAX_VALUE;
+            int secondDocDy = Integer.MAX_VALUE;
             for (AtfIssueRecord existing : kept) {
                 if (!check.equals(existing.getCheckClassName())
-                        || type != existing.getResultType()
-                        || resultId != existing.getResultIdValue()) {
+                        || type != existing.getResultType()) {
                     continue;
                 }
                 ViewHierarchyElement other = existing.getElement();
@@ -485,16 +581,43 @@
                     return true;
                 }
                 // Case 2: scrolled content — same spot on the page once translated.
-                if (docBounds != null && existing.documentBounds != null
-                        && intersectionOverUnion(
-                        docBounds.left, docBounds.top, docBounds.right, docBounds.bottom,
-                        existing.documentBounds.left, existing.documentBounds.top,
-                        existing.documentBounds.right, existing.documentBounds.bottom)
-                        >= SPATIAL_DEDUPE_IOU) {
-                    return true;
+                if (docBounds != null && existing.documentBounds != null) {
+                    if (intersectionOverUnion(
+                            docBounds.left, docBounds.top, docBounds.right, docBounds.bottom,
+                            existing.documentBounds.left, existing.documentBounds.top,
+                            existing.documentBounds.right, existing.documentBounds.bottom)
+                            >= SPATIAL_DEDUPE_IOU) {
+                        return true;
+                    }
+                    // Small widgets miss the IoU test when the scroll estimate is
+                    // off by a few dozen pixels. Same label and a close center is
+                    // still the same element; the slack stays under a row pitch.
+                    if (sameStableIdentity(el, other)
+                            && Math.abs(docBounds.centerX() - existing.documentBounds.centerX()) <= SCROLL_MATCH_SLACK_PX
+                            && Math.abs(docBounds.centerY() - existing.documentBounds.centerY()) <= SCROLL_MATCH_SLACK_PX) {
+                        return true;
+                    }
+                    // Same-sized widget whose label changed between captures
+                    // (clipped text, a live price). Only across viewports, and
+                    // only when no neighboring row is an equally good fit.
+                    if (acrossViewports
+                            && similarSpan(docBounds.width(), existing.documentBounds.width())
+                            && similarSpan(docBounds.height(), existing.documentBounds.height())
+                            && Math.abs(docBounds.centerX() - existing.documentBounds.centerX())
+                            <= SCROLL_MATCH_SLACK_PX) {
+                        int dy = Math.abs(docBounds.centerY() - existing.documentBounds.centerY());
+                        if (dy < bestDocDy) {
+                            secondDocDy = bestDocDy;
+                            bestDocDy = dy;
+                        } else if (dy < secondDocDy) {
+                            secondDocDy = dy;
+                        }
+                    }
                 }
             }
-            return false;
+            return acrossViewports
+                    && bestDocDy <= DOCUMENT_CENTER_MATCH_PX
+                    && secondDocDy >= bestDocDy + DOCUMENT_CENTER_RIVAL_GAP_PX;
         }
 
         /**
@@ -642,45 +765,60 @@
         private String cropElement(Bitmap full,
                                    Rect bounds,
                                    DisplayMetrics metrics) {
-            if (full.isRecycled()) {
+            if (full == null || full.isRecycled() || bounds == null || bounds.isEmpty()) {
                 return null;
             }
-            // Bounds and the screenshot share screen-pixel X/Y. Never scale by
-            // heightPixels — that value omits the nav bar, so scaleY > 1 and every
-            // crop slides downward (C+7, back-button becoming the search icon).
-            // Scale only when the bitmap width differs from the display width (WQHD vs FHD).
+
+            // Bounds and screenshot share screen-pixel X/Y.
+            // Scale only when screenshot width differs from display width.
             float scale = screenshotScale(full, metrics);
-            int elLeft = Math.round(bounds.left * scale);
-            int elTop = Math.round(bounds.top * scale);
-            int elRight = Math.round(bounds.right * scale);
-            int elBottom = Math.round(bounds.bottom * scale);
-            int extraX = Math.max(CROP_PADDING_PX, (MIN_CROP_WIDTH_PX - (elRight - elLeft)) / 2);
-            int extraY = Math.max(CROP_PADDING_PX, (MIN_CROP_HEIGHT_PX - (elBottom - elTop)) / 2);
-            int left = clamp(elLeft - extraX, 0, full.getWidth() - 1);
-            int top = clamp(elTop - extraY, 0, full.getHeight() - 1);
-            int right = clamp(elRight + extraX, left + 1, full.getWidth());
-            int bottom = clamp(elBottom + extraY, top + 1, full.getHeight());
+
+            int left = Math.round(bounds.left * scale);
+            int top = Math.round(bounds.top * scale);
+            int right = Math.round(bounds.right * scale);
+            int bottom = Math.round(bounds.bottom * scale);
+
+            // Clamp the element bounds to the screenshot.
+            left = clamp(left, 0, full.getWidth() - 1);
+            top = clamp(top, 0, full.getHeight() - 1);
+            right = clamp(right, left + 1, full.getWidth());
+            bottom = clamp(bottom, top + 1, full.getHeight());
+
             int width = right - left;
             int height = bottom - top;
+
             if (width <= 0 || height <= 0) {
                 return null;
             }
-            Bitmap crop = Bitmap.createBitmap(full, left, top, width, height);
-            Bitmap marked = highlightElement(crop, elLeft - left, elTop - top, elRight - left, elBottom - top);
+
+            // Crop ONLY the element with the accessibility issue.
+            // No padding, no minimum crop size, no neighbouring elements.
+            Bitmap crop = Bitmap.createBitmap(
+                    full,
+                    left,
+                    top,
+                    width,
+                    height
+            );
+
             try {
                 ByteArrayOutputStream buffer = new ByteArrayOutputStream();
-                if (!marked.compress(Bitmap.CompressFormat.PNG, 100, buffer)) {
+
+                if (!crop.compress(Bitmap.CompressFormat.PNG, 100, buffer)) {
                     Log.w(TAG, "Failed to compress crop");
                     return null;
                 }
-                return Base64.encodeToString(buffer.toByteArray(), Base64.NO_WRAP);
+
+                return Base64.encodeToString(
+                        buffer.toByteArray(),
+                        Base64.NO_WRAP
+                );
+
             } catch (Exception e) {
                 Log.w(TAG, "Failed to encode crop as base64", e);
                 return null;
+
             } finally {
-                if (marked != crop && !marked.isRecycled()) {
-                    marked.recycle();
-                }
                 if (!crop.isRecycled()) {
                     crop.recycle();
                 }
@@ -780,21 +918,19 @@
         }
 
         /**
-         * Same check + same widget, ignoring the ATF message. Measured dp is in
-         * the message and would otherwise keep two Add-to-cart buttons (33x33 vs
-         * 33x34) as separate issues.
+         * Same check + same widget. resultId is omitted: ATF assigns a new id
+         * when a sticky control is measured again after a scroll, and that was
+         * keeping the second snapshot.
          */
         private String issueKey(AccessibilityHierarchyCheckResult result, String elementId) {
             return result.getSourceCheckClass().getSimpleName()
                     + "|" + result.getType()
-                    + "|" + result.getResultId()
                     + "|" + elementId;
         }
 
         private String customIssueKey(AtfIssueRecord record, String elementId) {
             return record.getCheckClassName()
                     + "|" + record.getResultType()
-                    + "|" + record.getResultIdValue()
                     + "|" + elementId;
         }
 
@@ -884,8 +1020,7 @@
 
         private boolean sameFindingType(AtfIssueRecord a, AtfIssueRecord b) {
             return a.getCheckClassName().equals(b.getCheckClassName())
-                    && a.getResultType() == b.getResultType()
-                    && a.getResultIdValue() == b.getResultIdValue();
+                    && a.getResultType() == b.getResultType();
         }
 
         private boolean hasUsableBounds(ViewHierarchyElement el) {
@@ -1084,24 +1219,65 @@
         }
 
         /** Rects present and identical in both samples, so they held still for the bitmap. */
-        private Map<String, List<Rect>> stableBounds(Map<String, List<Rect>> before,
-                                                     Map<String, List<Rect>> after) {
+
+        private Map<String, List<Rect>> stableBounds(
+                Map<String, List<Rect>> before,
+                Map<String, List<Rect>> after) {
+
             Map<String, List<Rect>> stable = new HashMap<>();
+
             for (Map.Entry<String, List<Rect>> entry : before.entrySet()) {
                 List<Rect> later = after.get(entry.getKey());
-                if (later == null) {
+
+                if (later == null || later.isEmpty()) {
                     continue;
                 }
+
                 List<Rect> kept = new ArrayList<>();
-                for (Rect rect : entry.getValue()) {
-                    if (later.contains(rect)) {
-                        kept.add(rect);
+
+                for (Rect beforeRect : entry.getValue()) {
+
+                    Rect best = null;
+                    long bestDistance = Long.MAX_VALUE;
+
+                    for (Rect afterRect : later) {
+
+                        if (Math.abs(beforeRect.left - afterRect.left)
+                                > STABLE_BOUNDS_TOLERANCE_PX
+                                || Math.abs(beforeRect.top - afterRect.top)
+                                > STABLE_BOUNDS_TOLERANCE_PX
+                                || Math.abs(beforeRect.right - afterRect.right)
+                                > STABLE_BOUNDS_TOLERANCE_PX
+                                || Math.abs(beforeRect.bottom - afterRect.bottom)
+                                > STABLE_BOUNDS_TOLERANCE_PX) {
+                            continue;
+                        }
+
+                        long distance =
+                                Math.abs(beforeRect.left - afterRect.left)
+                                        + Math.abs(beforeRect.top - afterRect.top)
+                                        + Math.abs(beforeRect.right - afterRect.right)
+                                        + Math.abs(beforeRect.bottom - afterRect.bottom);
+
+                        if (distance < bestDistance) {
+                            bestDistance = distance;
+                            best = afterRect;
+                        }
+                    }
+
+                    if (best != null) {
+                        // Use the bounds from the screenshot's time window.
+                        // Prefer the after-snapshot bounds because they are closest
+                        // to the screenshot capture.
+                        kept.add(new Rect(best));
                     }
                 }
+
                 if (!kept.isEmpty()) {
                     stable.put(entry.getKey(), kept);
                 }
             }
+
             return stable;
         }
 
@@ -1185,13 +1361,109 @@
                 throws Exception {
             int x = Math.round(metrics.widthPixels * xFraction);
             int y1 = (int) (metrics.heightPixels * 0.85);
-            int y2 = (int) (metrics.heightPixels * 0.32);
+            int y2 = (int) (metrics.heightPixels * 0.35);
             String cmd = "input swipe " + x + " " + y1 + " " + x + " " + y2 + " 650";
             Log.i(TAG, "Near-full-page swipe: " + cmd);
             ParcelFileDescriptor pfd = uiAutomation.executeShellCommand(cmd);
             try (ParcelFileDescriptor.AutoCloseInputStream in =
                          new ParcelFileDescriptor.AutoCloseInputStream(pfd)) {
                 in.readAllBytes();
+            }
+        }
+
+        /**
+         * Undoes the scan's downward swipes so the app is back at the viewport
+         * where scanning started. Stops early when that fingerprint returns, or
+         * when further upward swipes no longer move the page.
+         */
+        private void scrollBackToTop(UiAutomation uiAutomation, DisplayMetrics metrics,
+                                     String originFingerprint, int scrollsPerformed) {
+            if (scrollsPerformed <= 0) {
+                return;
+            }
+            int maxAttempts = Math.max(scrollsPerformed + 2, Math.min(scrollsPerformed * 2, 30));
+            Log.i(TAG, "Scrolling back to top after " + scrollsPerformed
+                    + " advance(s), maxAttempts=" + maxAttempts);
+            try {
+                int unchangedStreak = 0;
+                for (int attempt = 0; attempt < maxAttempts; attempt++) {
+                    String before = contentFingerprint(uiAutomation, metrics);
+                    if (originFingerprint != null && originFingerprint.equals(before)) {
+                        Log.i(TAG, "Already at the starting viewport");
+                        return;
+                    }
+                    boolean moved = retreatScroll(uiAutomation, metrics, before);
+                    if (!moved) {
+                        unchangedStreak++;
+                        Log.i(TAG, "Scroll toward top produced no new content (streak=" + unchangedStreak + ")");
+                        if (unchangedStreak >= 2) {
+                            Log.i(TAG, "Reached top of page");
+                            return;
+                        }
+                        continue;
+                    }
+                    unchangedStreak = 0;
+                    if (originFingerprint != null
+                            && originFingerprint.equals(contentFingerprint(uiAutomation, metrics))) {
+                        Log.i(TAG, "Returned to the starting viewport");
+                        return;
+                    }
+                }
+                Log.i(TAG, "Stopped scrolling toward top after " + maxAttempts + " attempt(s)");
+            } catch (Exception e) {
+                Log.w(TAG, "Could not scroll back to top: " + e.getMessage());
+            }
+        }
+
+        /** Mirror of {@link #advanceScroll}: move content toward the top of the page. */
+        private boolean retreatScroll(UiAutomation uiAutomation, DisplayMetrics metrics, String beforeFingerprint)
+                throws Exception {
+            swipeTowardTop(uiAutomation, metrics, 0.18f);
+            if (contentChanged(uiAutomation, metrics, beforeFingerprint)) {
+                return true;
+            }
+            swipeTowardTop(uiAutomation, metrics, 0.82f);
+            if (contentChanged(uiAutomation, metrics, beforeFingerprint)) {
+                return true;
+            }
+            return scrollPrimaryVerticalBackward(uiAutomation, metrics)
+                    && contentChanged(uiAutomation, metrics, beforeFingerprint);
+        }
+
+        /** Finger moves down so the page content scrolls toward the top. */
+        private void swipeTowardTop(UiAutomation uiAutomation, DisplayMetrics metrics, float xFraction)
+                throws Exception {
+            int x = Math.round(metrics.widthPixels * xFraction);
+            int y1 = (int) (metrics.heightPixels * 0.35);
+            int y2 = (int) (metrics.heightPixels * 0.85);
+            String cmd = "input swipe " + x + " " + y1 + " " + x + " " + y2 + " 650";
+            Log.i(TAG, "Scroll-to-top swipe: " + cmd);
+            ParcelFileDescriptor pfd = uiAutomation.executeShellCommand(cmd);
+            try (ParcelFileDescriptor.AutoCloseInputStream in =
+                         new ParcelFileDescriptor.AutoCloseInputStream(pfd)) {
+                in.readAllBytes();
+            }
+        }
+
+        private boolean scrollPrimaryVerticalBackward(UiAutomation uiAutomation, DisplayMetrics metrics) {
+            AccessibilityNodeInfo root = uiAutomation.getRootInActiveWindow();
+            if (root == null) {
+                return false;
+            }
+            AccessibilityNodeInfo scroller = null;
+            try {
+                scroller = findPrimaryVerticalScroller(root, metrics, null);
+                if (scroller == null) {
+                    return false;
+                }
+                boolean ok = scroller.performAction(AccessibilityNodeInfo.ACTION_SCROLL_BACKWARD);
+                Log.i(TAG, "ACTION_SCROLL_BACKWARD on primary scroller: " + ok);
+                return ok;
+            } finally {
+                if (scroller != null) {
+                    scroller.recycle();
+                }
+                root.recycle();
             }
         }
 
@@ -1346,13 +1618,6 @@
             return cs == null ? "" : cs.toString();
         }
 
-        private static boolean parseBoolean(String raw, boolean fallback) {
-            if (raw == null || raw.isBlank()) {
-                return fallback;
-            }
-            return Boolean.parseBoolean(raw.trim());
-        }
-
         private static int parseInt(String raw, int fallback) {
             if (raw == null || raw.isBlank()) {
                 return fallback;
@@ -1413,38 +1678,621 @@
 
         /** The part of {@link #buildIdentity} that ignores screen position. */
         private static String baseIdentity(String resourceName, String text, String contentDescription, String className) {
-            return resourceName + "|" + text + "|" + contentDescription + "|" + className;
+            return normalizeIdentityText(resourceName) + "|"
+                    + normalizeIdentityText(text) + "|"
+                    + normalizeIdentityText(contentDescription) + "|"
+                    + nullToEmpty(className).trim();
+        }
+
+        /** Trim and collapse whitespace so a repaint does not look like a new widget. */
+        private static String normalizeIdentityText(String value) {
+            if (value == null || value.isEmpty()) {
+                return "";
+            }
+            StringBuilder out = new StringBuilder(value.length());
+            boolean pendingSpace = false;
+            for (int i = 0; i < value.length(); i++) {
+                char c = value.charAt(i);
+                if (Character.isWhitespace(c)) {
+                    pendingSpace = out.length() > 0;
+                    continue;
+                }
+                if (pendingSpace) {
+                    out.append(' ');
+                    pendingSpace = false;
+                }
+                out.append(c);
+            }
+            return out.toString();
         }
 
         /**
-         * Estimates how far content moved vertically between two viewports by
-         * matching elements whose resource id / text / description / class is
-         * unique and unchanged on both sides, then taking the median shift of
-         * those matches. Falls back to a nominal near-full-page estimate when too
-         * few elements survive the scroll unambiguously (e.g. a full page change).
+         * One finding as it appeared on screen in a viewport. The next viewport
+         * uses these to drop the same widget when it is still visible after the swipe.
          */
-        private long measureVerticalShift(Map<String, List<Rect>> before,
-                                          Map<String, List<Rect>> after,
-                                          int screenHeight) {
-            List<Long> deltas = new ArrayList<>();
+        private static final class ElementSighting {
+            final String check;
+            final AccessibilityCheckResultType type;
+            final int resultId;
+            final String className;
+            final String resourceName;
+            final String text;
+            final String contentDescription;
+            final int centerX;
+            final int centerY;
+            final int width;
+            final int height;
+
+            ElementSighting(String check,
+                            AccessibilityCheckResultType type,
+                            int resultId,
+                            String className,
+                            String resourceName,
+                            String text,
+                            String contentDescription,
+                            int centerX,
+                            int centerY,
+                            int width,
+                            int height) {
+                this.check = check;
+                this.type = type;
+                this.resultId = resultId;
+                this.className = className;
+                this.resourceName = resourceName;
+                this.text = text;
+                this.contentDescription = contentDescription;
+                this.centerX = centerX;
+                this.centerY = centerY;
+                this.width = width;
+                this.height = height;
+            }
+        }
+
+        private List<ElementSighting> sightingsFromResults(List<AccessibilityHierarchyCheckResult> batch) {
+            List<ElementSighting> sightings = new ArrayList<>();
+            if (batch == null) {
+                return sightings;
+            }
+            for (AccessibilityHierarchyCheckResult result : batch) {
+                AccessibilityCheckResultType type = result.getType();
+                if (type == AccessibilityCheckResultType.NOT_RUN
+                        || type == AccessibilityCheckResultType.SUPPRESSED
+                        || result.getSourceCheckClass() == null) {
+                    continue;
+                }
+                ElementSighting sighting = sightingOf(
+                        result.getSourceCheckClass().getSimpleName(),
+                        type,
+                        result.getResultId(),
+                        result.getElement());
+                if (sighting != null) {
+                    sightings.add(sighting);
+                }
+            }
+            return sightings;
+        }
+
+        private List<ElementSighting> sightingsFromRecords(List<AtfIssueRecord> records) {
+            List<ElementSighting> sightings = new ArrayList<>();
+            if (records == null) {
+                return sightings;
+            }
+            for (AtfIssueRecord record : records) {
+                if (record == null) {
+                    continue;
+                }
+                AccessibilityCheckResultType type = record.getResultType();
+                if (type == AccessibilityCheckResultType.NOT_RUN || type == AccessibilityCheckResultType.SUPPRESSED) {
+                    continue;
+                }
+                ElementSighting sighting = sightingOf(
+                        record.getCheckClassName(),
+                        type,
+                        record.getResultIdValue(),
+                        record.getElement());
+                if (sighting != null) {
+                    sightings.add(sighting);
+                }
+            }
+            return sightings;
+        }
+
+        private ElementSighting sightingOf(String check,
+                                           AccessibilityCheckResultType type,
+                                           int resultId,
+                                           ViewHierarchyElement el) {
+            if (el == null || !hasUsableBounds(el)) {
+                return null;
+            }
+            var bounds = el.getBoundsInScreen();
+            if (bounds == null) {
+                return null;
+            }
+            return new ElementSighting(
+                    check == null ? "" : check,
+                    type,
+                    resultId,
+                    nullToEmpty(el.getClassName()),
+                    nullToEmpty(el.getResourceName()),
+                    nullToEmpty(el.getText()),
+                    nullToEmpty(el.getContentDescription()),
+                    (bounds.getLeft() + bounds.getRight()) / 2,
+                    (bounds.getTop() + bounds.getBottom()) / 2,
+                    bounds.getRight() - bounds.getLeft(),
+                    bounds.getBottom() - bounds.getTop());
+        }
+
+        /**
+         * True when this finding is a widget that was already on screen in the
+         * previous viewport and moved with the scroll. Repeated labels stay
+         * distinct: the match has to land on the position that widget moved to,
+         * not on a sibling row that reused the same slot.
+         */
+        private boolean seenInPreviousViewport(String check,
+                                              AccessibilityCheckResultType type,
+                                              ViewHierarchyElement el,
+                                              List<ElementSighting> previousSightings,
+                                              long shiftPx,
+                                              int screenHeight) {
+            if (el == null || previousSightings == null || previousSightings.isEmpty()) {
+                return false;
+            }
+            var bounds = el.getBoundsInScreen();
+            if (bounds == null) {
+                return false;
+            }
+            int centerX = (bounds.getLeft() + bounds.getRight()) / 2;
+            int centerY = (bounds.getTop() + bounds.getBottom()) / 2;
+            int width = bounds.getRight() - bounds.getLeft();
+            int height = bounds.getBottom() - bounds.getTop();
+            String className = nullToEmpty(el.getClassName());
+            String resource = nullToEmpty(el.getResourceName());
+            String text = nullToEmpty(el.getText());
+            String desc = nullToEmpty(el.getContentDescription());
+            int xSlack = Math.max(48, width / 4);
+            int bestShiftMiss = Integer.MAX_VALUE;
+
+            for (ElementSighting prior : previousSightings) {
+                if (!check.equals(prior.check) || type != prior.type) {
+                    continue;
+                }
+                if (!className.equals(prior.className) || !sameWidgetLabels(resource, text, desc, prior)) {
+                    continue;
+                }
+                if (Math.abs(centerX - prior.centerX) > xSlack
+                        || !similarSpan(width, prior.width)) {
+                    continue;
+                }
+                boolean clipped = touchesVerticalEdge(prior.centerY, prior.height, screenHeight)
+                        || touchesVerticalEdge(centerY, height, screenHeight);
+                if (!clipped && !similarSpan(height, prior.height)) {
+                    continue;
+                }
+                int dy = prior.centerY - centerY;
+                int shiftMiss = (int) Math.abs(dy - shiftPx);
+                if (shiftMiss < bestShiftMiss) {
+                    bestShiftMiss = shiftMiss;
+                }
+            }
+            return shiftPx > MIN_MEANINGFUL_SHIFT_PX && bestShiftMiss <= SCROLL_MATCH_SLACK_PX;
+        }
+
+        /**
+         * A header that starts below other content, then pins to the top after
+         * the first scroll. Same labels and column, but it moved up by less
+         * than the page, and its center is now in the top band. Repeated rows
+         * travel with the scroll, so they are not counted. Exactly one prior
+         * must resist the scroll — two chrome widgets with the same label stay
+         * distinct. Height is not compared: a collapsing bar gets shorter as
+         * it docks.
+         */
+        private boolean isPinnedStickyDuplicate(String check,
+                                                AccessibilityCheckResultType type,
+                                                ViewHierarchyElement el,
+                                                List<ElementSighting> previousSightings,
+                                                long shiftPx,
+                                                int screenHeight) {
+            if (el == null || previousSightings == null || previousSightings.isEmpty()) {
+                return false;
+            }
+            if (shiftPx <= MIN_MEANINGFUL_SHIFT_PX || screenHeight <= 0) {
+                return false;
+            }
+            var bounds = el.getBoundsInScreen();
+            if (bounds == null) {
+                return false;
+            }
+            int centerX = (bounds.getLeft() + bounds.getRight()) / 2;
+            int centerY = (bounds.getTop() + bounds.getBottom()) / 2;
+            int pinBand = (int) (screenHeight * NEW_BAND_TOP_FRACTION);
+            if (centerY > pinBand) {
+                return false;
+            }
+            int width = bounds.getRight() - bounds.getLeft();
+            String className = nullToEmpty(el.getClassName());
+            String resource = nullToEmpty(el.getResourceName());
+            String text = nullToEmpty(el.getText());
+            String desc = nullToEmpty(el.getContentDescription());
+            int xSlack = Math.max(48, width / 4);
+            int resisted = 0;
+            for (ElementSighting prior : previousSightings) {
+                if (!check.equals(prior.check) || type != prior.type) {
+                    continue;
+                }
+                if (!className.equals(prior.className) || !sameWidgetLabels(resource, text, desc, prior)) {
+                    continue;
+                }
+                if (Math.abs(centerX - prior.centerX) > xSlack || !similarSpan(width, prior.width)) {
+                    continue;
+                }
+                int dy = prior.centerY - centerY;
+                if (dy >= -SCROLL_MATCH_SLACK_PX && dy < shiftPx - SCROLL_MATCH_SLACK_PX) {
+                    resisted++;
+                    if (resisted > 1) {
+                        return false;
+                    }
+                }
+            }
+            return resisted == 1;
+        }
+
+        private boolean sameWidgetLabels(String resource, String text, String desc, ElementSighting prior) {
+            resource = normalizeIdentityText(resource);
+            text = normalizeIdentityText(text);
+            desc = normalizeIdentityText(desc);
+            String priorResource = normalizeIdentityText(prior.resourceName);
+            String priorText = normalizeIdentityText(prior.text);
+            String priorDesc = normalizeIdentityText(prior.contentDescription);
+            if (resource.equals(priorResource) && text.equals(priorText) && desc.equals(priorDesc)) {
+                return true;
+            }
+            return !resource.isEmpty()
+                    && resource.equals(priorResource)
+                    && labelsCompatible(text, priorText)
+                    && labelsCompatible(desc, priorDesc);
+        }
+
+        /** A row cut by the top or bottom fold changes height on the next viewport. */
+        private static boolean touchesVerticalEdge(int centerY, int height, int screenHeight) {
+            if (screenHeight <= 0 || height <= 0) {
+                return false;
+            }
+            int top = centerY - height / 2;
+            int bottom = centerY + height / 2;
+            return top <= 8 || bottom >= screenHeight - 8;
+        }
+
+        private static boolean labelsCompatible(String a, String b) {
+            if (a.equals(b) || a.isEmpty() || b.isEmpty()) {
+                return true;
+            }
+            String left = a.toLowerCase(Locale.US);
+            String right = b.toLowerCase(Locale.US);
+            return left.startsWith(right) || right.startsWith(left);
+        }
+
+        private static boolean similarSpan(int a, int b) {
+            int longer = Math.max(a, b);
+            int shorter = Math.min(Math.max(a, 1), Math.max(b, 1));
+            return shorter * 2 >= longer;
+        }
+
+        private boolean sameStableIdentity(ViewHierarchyElement a, ViewHierarchyElement b) {
+            if (a == null || b == null) {
+                return false;
+            }
+            return baseIdentity(
+                    nullToEmpty(a.getResourceName()),
+                    nullToEmpty(a.getText()),
+                    nullToEmpty(a.getContentDescription()),
+                    nullToEmpty(a.getClassName()))
+                    .equals(baseIdentity(
+                            nullToEmpty(b.getResourceName()),
+                            nullToEmpty(b.getText()),
+                            nullToEmpty(b.getContentDescription()),
+                            nullToEmpty(b.getClassName())));
+        }
+
+        /**
+         * Estimates how far content moved vertically between two viewports.
+         * Unique labels are trusted when they agree. Repeated rows still vote:
+         * the densest cluster of vertical deltas is the scroll, so a short nudge
+         * is not replaced by a full-page guess. The nominal swipe distance is
+         * only a tie-break between equal clusters, and the fallback when nothing
+         * on screen can be tracked.
+         */
+        private ShiftEstimate measureVerticalShift(Map<String, List<Rect>> before,
+                                                   Map<String, List<Rect>> after,
+                                                   int screenWidth,
+                                                   int screenHeight) {
+            List<Long> uniqueDeltas = new ArrayList<>();
+            List<Long> pairDeltas = new ArrayList<>();
+            int xSlack = Math.max(64, screenWidth / 10);
             for (Map.Entry<String, List<Rect>> entry : before.entrySet()) {
                 List<Rect> beforeRects = entry.getValue();
                 List<Rect> afterRects = after.get(entry.getKey());
-                if (beforeRects.size() != 1 || afterRects == null || afterRects.size() != 1) {
-                    continue; // ambiguous (repeated list items) — skip rather than risk a bad pairing
+                if (afterRects == null || afterRects.isEmpty() || beforeRects == null || beforeRects.isEmpty()) {
+                    continue;
                 }
-                long delta = beforeRects.get(0).centerY() - afterRects.get(0).centerY();
-                if (delta > MIN_MEANINGFUL_SHIFT_PX && delta < screenHeight) {
-                    deltas.add(delta);
+                boolean unique = beforeRects.size() == 1 && afterRects.size() == 1;
+                for (Rect from : beforeRects) {
+                    for (Rect to : afterRects) {
+                        if (!similarColumn(from, to, xSlack)) {
+                            continue;
+                        }
+                        long delta = from.centerY() - to.centerY();
+                        if (delta <= MIN_MEANINGFUL_SHIFT_PX || delta >= screenHeight) {
+                            continue;
+                        }
+                        pairDeltas.add(delta);
+                        if (unique) {
+                            uniqueDeltas.add(delta);
+                        }
+                    }
                 }
             }
-            if (deltas.size() < MIN_SHIFT_SAMPLES) {
-                long nominal = Math.round(screenHeight * DEFAULT_SHIFT_FRACTION);
-                Log.i(TAG, "Only " + deltas.size() + " unambiguous matches — using nominal shift " + nominal + "px");
-                return nominal;
+            long nominal = Math.round(screenHeight * DEFAULT_SHIFT_FRACTION);
+            Long uniqueConsensus = consensusDelta(uniqueDeltas, screenHeight);
+            if (uniqueConsensus != null) {
+                Log.i(TAG, "Scroll shift from " + uniqueDeltas.size()
+                        + " unique element(s): " + uniqueConsensus + "px");
+                return new ShiftEstimate(uniqueConsensus, true);
+            }
+            Long paired = consensusNear(pairDeltas, nominal, screenHeight);
+            if (paired != null) {
+                Log.i(TAG, "Scroll shift from " + pairDeltas.size()
+                        + " element pair(s): " + paired + "px (nominal " + nominal + "px)");
+                return new ShiftEstimate(paired, true);
+            }
+            Log.i(TAG, "No scroll match — using nominal shift " + nominal + "px");
+            return new ShiftEstimate(nominal, false);
+        }
+
+        /**
+         * Prefer a screenshot alignment when it agrees with element tracking, or
+         * when element tracking found nothing and fell back to the finger travel.
+         * A repeating list can align one row off; element tracking wins that tie.
+         */
+        private long chooseScrollShift(ShiftEstimate tracked, Long visualShift, int screenHeight, int viewport) {
+            if (visualShift != null && tracked.fromElements
+                    && Math.abs(visualShift - tracked.px) <= screenHeight / 6L) {
+                Log.i(TAG, "Viewport " + viewport + " scroll shift from screenshot: " + visualShift
+                        + "px (elements " + tracked.px + "px)");
+                return visualShift;
+            }
+            if (visualShift != null && !tracked.fromElements) {
+                Log.i(TAG, "Viewport " + viewport + " scroll shift from screenshot: " + visualShift
+                        + "px (element tracking had no match, nominal was " + tracked.px + "px)");
+                return visualShift;
+            }
+            Log.i(TAG, "Viewport " + viewport + " scroll shift: " + tracked.px + "px");
+            return tracked.px;
+        }
+
+        /** Downsampled grayscale of the page body, used only to measure scroll. */
+        private static final class VisualColumn {
+            final int step;
+            final int width;
+            final int[] luma;
+
+            VisualColumn(int step, int width, int[] luma) {
+                this.step = step;
+                this.width = width;
+                this.luma = luma;
+            }
+
+            int height() {
+                return width == 0 ? 0 : luma.length / width;
+            }
+        }
+
+        private static final class ShiftEstimate {
+            final long px;
+            final boolean fromElements;
+
+            ShiftEstimate(long px, boolean fromElements) {
+                this.px = px;
+                this.fromElements = fromElements;
+            }
+        }
+
+        private VisualColumn sampleVisual(Bitmap screenshot, DisplayMetrics metrics) {
+            if (screenshot == null || metrics.widthPixels <= 0 || metrics.heightPixels <= 0) {
+                return null;
+            }
+            Bitmap source = screenshot;
+            Bitmap copied = null;
+            if (screenshot.getConfig() == Bitmap.Config.HARDWARE) {
+                copied = screenshot.copy(Bitmap.Config.ARGB_8888, false);
+                if (copied == null) {
+                    return null;
+                }
+                source = copied;
+            }
+            try {
+                float scale = screenshotScale(source, metrics);
+                int step = 8;
+                int left = metrics.widthPixels / 6;
+                int right = metrics.widthPixels - left;
+                int top = metrics.heightPixels / 10;
+                int bottom = metrics.heightPixels - metrics.heightPixels / 12;
+                int width = Math.max(1, (right - left) / step);
+                int height = Math.max(1, (bottom - top) / step);
+                int[] luma = new int[width * height];
+                int bitmapWidth = source.getWidth();
+                int bitmapHeight = source.getHeight();
+                for (int y = 0; y < height; y++) {
+                    int sampleY = Math.min(bitmapHeight - 1,
+                            Math.max(0, Math.round((top + y * step) * scale)));
+                    int row = y * width;
+                    for (int x = 0; x < width; x++) {
+                        int sampleX = Math.min(bitmapWidth - 1,
+                                Math.max(0, Math.round((left + x * step) * scale)));
+                        int color = source.getPixel(sampleX, sampleY);
+                        luma[row + x] = (Color.red(color) * 3 + Color.green(color) * 6 + Color.blue(color)) / 10;
+                    }
+                }
+                return new VisualColumn(step, width, luma);
+            } finally {
+                if (copied != null && !copied.isRecycled()) {
+                    copied.recycle();
+                }
+            }
+        }
+
+        /**
+         * Display pixels the page moved up. Null when the frames do not show one
+         * clear alignment (a video, a static page, or a pattern that matches
+         * equally well at several offsets).
+         */
+        private Long measureVisualShift(VisualColumn before, VisualColumn after, int screenHeight) {
+            if (before == null || after == null
+                    || before.width != after.width
+                    || before.step != after.step
+                    || before.width <= 0) {
+                return null;
+            }
+            int sharedRows = Math.min(before.height(), after.height());
+            if (sharedRows < 16) {
+                return null;
+            }
+            int maxShift = (int) (screenHeight * 0.92f);
+            int capacity = maxShift / before.step + 1;
+            long[] means = new long[capacity];
+            int[] offsets = new int[capacity];
+            int countShifts = 0;
+            for (int dy = 0; dy <= maxShift && countShifts < capacity; dy += before.step) {
+                int rowShift = dy / before.step;
+                int overlap = sharedRows - rowShift;
+                if (overlap < 12) {
+                    break;
+                }
+                long sad = 0;
+                int count = 0;
+                for (int y = 0; y < overlap; y++) {
+                    int from = (y + rowShift) * before.width;
+                    int to = y * after.width;
+                    for (int x = 0; x < before.width; x++) {
+                        sad += Math.abs(before.luma[from + x] - after.luma[to + x]);
+                        count++;
+                    }
+                }
+                means[countShifts] = sad / Math.max(1, count);
+                offsets[countShifts] = dy;
+                countShifts++;
+            }
+            if (countShifts == 0) {
+                return null;
+            }
+            int bestIndex = 0;
+            for (int i = 1; i < countShifts; i++) {
+                if (means[i] < means[bestIndex]) {
+                    bestIndex = i;
+                }
+            }
+            int bestDy = offsets[bestIndex];
+            long best = means[bestIndex];
+            long zero = means[0];
+            long rival = Long.MAX_VALUE;
+            for (int i = 0; i < countShifts; i++) {
+                if (Math.abs(offsets[i] - bestDy) < 48) {
+                    continue;
+                }
+                if (means[i] < rival) {
+                    rival = means[i];
+                }
+            }
+            if (bestDy <= MIN_MEANINGFUL_SHIFT_PX) {
+                return null;
+            }
+            if (zero - best < 8 || rival - best < 4) {
+                return null;
+            }
+            return (long) bestDy;
+        }
+
+        /** Median of the tightest group, when at least two samples agree. */
+        private static Long consensusDelta(List<Long> deltas, int screenHeight) {
+            if (deltas.size() < 2) {
+                return null;
             }
             Collections.sort(deltas);
-            return deltas.get(deltas.size() / 2);
+            int band = Math.max(48, screenHeight / 30);
+            int[] window = densestWindow(deltas, 0, deltas.size(), band);
+            int count = window[1] - window[0];
+            if (count < 2) {
+                return null;
+            }
+            return deltas.get(window[0] + (count - 1) / 2);
+        }
+
+        /**
+         * Median of the densest delta cluster. A clearly larger cluster wins even
+         * when the page moved less than the finger. Equal clusters (a row of
+         * identical widgets, matched to the neighbor as often as to itself) stay
+         * with the one nearest the swipe distance.
+         */
+        private static Long consensusNear(List<Long> deltas, long seed, int screenHeight) {
+            if (deltas.size() < 2) {
+                return null;
+            }
+            Collections.sort(deltas);
+            int band = Math.max(64, screenHeight / 20);
+            int[] primary = densestWindow(deltas, 0, deltas.size(), band);
+            int primaryCount = primary[1] - primary[0];
+            if (primaryCount < 2) {
+                return null;
+            }
+            long primaryMedian = deltas.get(primary[0] + (primaryCount - 1) / 2);
+            int[] left = densestWindow(deltas, 0, primary[0], band);
+            int[] right = densestWindow(deltas, primary[1], deltas.size(), band);
+            int leftCount = left[1] - left[0];
+            int rightCount = right[1] - right[0];
+            int rivalCount = Math.max(leftCount, rightCount);
+            if (primaryCount > rivalCount || rivalCount < 2) {
+                return primaryMedian;
+            }
+            long rivalMedian = leftCount >= rightCount
+                    ? deltas.get(left[0] + (leftCount - 1) / 2)
+                    : deltas.get(right[0] + (rightCount - 1) / 2);
+            long nearer = Math.abs(primaryMedian - seed) <= Math.abs(rivalMedian - seed)
+                    ? primaryMedian
+                    : rivalMedian;
+            // A cluster near the finger travel is the swipe we asked for.
+            if (Math.abs(nearer - seed) <= screenHeight / 5L) {
+                return nearer;
+            }
+            // The page moved less than the finger. Identical rows then pair
+            // both with themselves and with the next row; the smaller delta
+            // is the widget matched to itself.
+            return Math.min(primaryMedian, rivalMedian);
+        }
+
+        /** @return {@code [startInclusive, endExclusive]} of the densest band in {@code [from, to)}. */
+        private static int[] densestWindow(List<Long> sorted, int from, int to, int band) {
+            int bestStart = from;
+            int bestEnd = from;
+            int right = from;
+            for (int left = from; left < to; left++) {
+                if (right < left) {
+                    right = left;
+                }
+                while (right < to && sorted.get(right) - sorted.get(left) <= band) {
+                    right++;
+                }
+                if (right - left > bestEnd - bestStart) {
+                    bestStart = left;
+                    bestEnd = right;
+                }
+            }
+            return new int[]{bestStart, bestEnd};
+        }
+
+        private static boolean similarColumn(Rect from, Rect to, int xSlack) {
+            if (Math.abs(from.centerX() - to.centerX()) > xSlack) {
+                return false;
+            }
+            return similarSpan(from.height(), to.height());
         }
 
         /**

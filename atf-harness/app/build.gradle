@@ -12,8 +12,8 @@ android {
         applicationId "com.poc.a11y.atf.harness"
         minSdk 26
         targetSdk 34
-        versionCode 3
-        versionName "3.0"
+        versionCode 1
+        versionName "1.1"
 
         // Real device serial/app-under-test is chosen at scan time by the
         // Spring Boot side (AtfHarnessRunner), not baked in here.
