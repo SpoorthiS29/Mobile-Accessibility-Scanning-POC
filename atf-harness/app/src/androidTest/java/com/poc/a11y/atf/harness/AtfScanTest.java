@@ -262,7 +262,7 @@
                             screenshot, realMetrics, capturedBounds, cropByElement);
                     List<AtfIssueRecord> alreadyKept = new ArrayList<>(merged);
                     alreadyKept.addAll(atfAdded);
-                    List<AtfIssueRecord> customFindings = runCustomHierarchyChecks(hierarchy, cropper);
+                    List<AtfIssueRecord> customFindings = runCustomHierarchyChecks(hierarchy, cropper, screenshot);
                     List<AtfIssueRecord> customAdded = mergeCustomNew(
                             seenIssueKeys, alreadyKept, customFindings, cumulativeScrollPx,
                             previousSightings, shiftThisPass, realMetrics.heightPixels);
@@ -394,11 +394,11 @@
          * before the check returns. Add new checks in {@link CustomHierarchyChecks}.
          */
         private List<AtfIssueRecord> runCustomHierarchyChecks(AccessibilityHierarchyAndroid hierarchy,
-                                                              ViewportCropper cropper) {
+                                                              ViewportCropper cropper,  Bitmap screenshot) {
             List<AtfIssueRecord> all = new ArrayList<>();
             for (CustomHierarchyCheck check : CustomHierarchyChecks.viewportChecks()) {
                 Log.i(TAG, "RUNNING CUSTOM CHECK: " + check.getCheckName());
-                List<AtfIssueRecord> results = check.evaluate(hierarchy, cropper);
+                List<AtfIssueRecord> results = check.evaluate(hierarchy, cropper, screenshot);
                 Log.i(TAG, "CUSTOM CHECK RESULT COUNT: " + check.getCheckName() + " = " + results.size());
                 all.addAll(results);
             }

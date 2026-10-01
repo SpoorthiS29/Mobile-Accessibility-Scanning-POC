@@ -1,5 +1,7 @@
 package com.poc.a11y.atf.harness;
 
+import android.graphics.Bitmap;
+
 import com.google.android.apps.common.testing.accessibility.framework.uielement.AccessibilityHierarchy;
 
 import java.util.List;
@@ -26,4 +28,12 @@ interface CustomHierarchyCheck {
      * {@code cropper} is invoked on each finding before it is added.
      */
     List<AtfIssueRecord> evaluate(AccessibilityHierarchy hierarchy, ViewportCropper cropper);
+
+    default List<AtfIssueRecord> evaluate(
+            AccessibilityHierarchy hierarchy,
+            ViewportCropper cropper,
+            Bitmap screenshot) {
+
+        return evaluate(hierarchy, cropper);
+    }
 }

@@ -14,7 +14,9 @@ final class CustomHierarchyChecks {
     static List<CustomHierarchyCheck> viewportChecks() {
         return List.of(
                 new LabelInNameMismatchCheck(),
-                new UnannouncedFormErrorCheck()
+                new UnannouncedFormErrorCheck(),
+                new LowIconContrastCheck(),
+                new IllogicalFocusOrderCheck()
         );
     }
 }
