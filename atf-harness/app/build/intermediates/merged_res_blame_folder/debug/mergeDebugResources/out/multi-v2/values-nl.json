@@ -1,7 +1,7 @@
 {
     "logs": [
         {
-            "outputFile": "com.poc.a11y.atf.harness.app-mergeDebugResources-19:/values-nl/values-nl.xml",
+            "outputFile": "com.poc.a11y.atf.harness.app-mergeDebugResources-25:/values-nl/values-nl.xml",
             "map": [
                 {
                     "source": "C:\\Users\\User\\.gradle\\caches\\9.1.0\\transforms\\918454f45341f0eec36f72040941d401\\workspace\\transformed\\play-services-base-18.5.0\\res\\values-nl\\values.xml",

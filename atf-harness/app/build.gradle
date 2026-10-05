@@ -7,17 +7,14 @@ android {
     compileSdk 34
 
     defaultConfig {
-        // This APK is never launched by a user - it only exists so the
-        // androidTest APK below has something to instrument against.
+        // Single APK: the scan runs inside AtfAccessibilityService. There is no
+        // androidTest / instrumentation APK any more, so UiAutomator2 never has
+        // to be stopped and restarted around a scan.
         applicationId "com.poc.a11y.atf.harness"
-        minSdk 26
+        minSdk 26          // screenshots (contrast checks, crops) need API 30+
         targetSdk 34
-        versionCode 1
-        versionName "1.1"
-
-        // Real device serial/app-under-test is chosen at scan time by the
-        // Spring Boot side (AtfHarnessRunner), not baked in here.
-        testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
+        versionCode 2
+        versionName "2.0"
     }
 
     buildTypes {
@@ -30,18 +27,35 @@ android {
         sourceCompatibility JavaVersion.VERSION_11
         targetCompatibility JavaVersion.VERSION_11
     }
+
+    // The old instrumentation sources under src/androidTest now live in
+    // src/main (AtfScanTest -> AtfScanner). Keep them out of the build until
+    // the androidTest folder is deleted.
+    sourceSets {
+        androidTest {
+            java.srcDirs = []
+        }
+    }
+
+    packaging {
+        resources {
+            excludes += [
+                    'META-INF/DEPENDENCIES',
+                    'META-INF/LICENSE*',
+                    'META-INF/NOTICE*',
+                    'META-INF/*.kotlin_module'
+            ]
+        }
+    }
 }
 
 dependencies {
-    androidTestImplementation 'androidx.test:runner:1.6.1'
-    androidTestImplementation 'androidx.test.ext:junit:1.2.1'
-
-    // Google Accessibility Test Framework
-    androidTestImplementation 'com.google.android.apps.common.testing.accessibility.framework:accessibility-test-framework:4.1.1'
+    // Google Accessibility Test Framework (was androidTestImplementation)
+    implementation 'com.google.android.apps.common.testing.accessibility.framework:accessibility-test-framework:4.1.1'
     // Google ML Kit - OCR
     implementation 'com.google.mlkit:text-recognition:16.0.1'
 
-    // Required by ATF test code
-    androidTestImplementation 'com.google.guava:guava:33.3.1-android'
-    androidTestImplementation 'org.checkerframework:checker-qual:3.48.3'
+    // Required by ATF code (was androidTestImplementation)
+    implementation 'com.google.guava:guava:33.3.1-android'
+    implementation 'org.checkerframework:checker-qual:3.48.3'
 }

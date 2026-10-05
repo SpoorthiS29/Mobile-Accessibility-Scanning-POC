@@ -1,1 +1,4 @@
+int string app_name 0x0
+int string service_description 0x0
+int string service_label 0x0
 int xml atf_accessibility_service 0x0

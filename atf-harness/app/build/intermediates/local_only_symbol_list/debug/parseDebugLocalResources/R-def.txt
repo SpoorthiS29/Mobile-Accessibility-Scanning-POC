@@ -1,3 +1,6 @@
 R_DEF: Internal format may change without notice
 local
+string app_name
+string service_description
+string service_label
 xml atf_accessibility_service

@@ -1,2 +1,5 @@
 com.poc.a11y.atf.harness
+string app_name
+string service_description
+string service_label
 xml atf_accessibility_service

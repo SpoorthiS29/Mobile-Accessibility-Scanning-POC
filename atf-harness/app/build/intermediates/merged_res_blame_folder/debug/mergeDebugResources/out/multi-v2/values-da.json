@@ -1,7 +1,7 @@
 {
     "logs": [
         {
-            "outputFile": "com.poc.a11y.atf.harness.app-mergeDebugResources-19:/values-da/values-da.xml",
+            "outputFile": "com.poc.a11y.atf.harness.app-mergeDebugResources-25:/values-da/values-da.xml",
             "map": [
                 {
                     "source": "C:\\Users\\User\\.gradle\\caches\\9.1.0\\transforms\\1011d34be16667d89aa5595f029ac674\\workspace\\transformed\\core-1.9.0\\res\\values-da\\values-da.xml",

@@ -1,0 +1,6 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="app_name">ATF Harness</string>
+    <string name="service_label">FireFlink ATF Scanner</string>
+    <string name="service_description">Runs Google Accessibility Test Framework checks on the app in the foreground when FireFlink requests a scan. It does not collect or send data anywhere else.</string>
+</resources>
