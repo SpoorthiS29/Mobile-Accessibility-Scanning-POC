@@ -1,7 +1,7 @@
 {
     "logs": [
         {
-            "outputFile": "com.poc.a11y.atf.harness.app-mergeDebugResources-25:/values-kk/values-kk.xml",
+            "outputFile": "com.fireflink.a11y.atf.app-mergeDebugResources-25:/values-kk/values-kk.xml",
             "map": [
                 {
                     "source": "C:\\Users\\User\\.gradle\\caches\\9.1.0\\transforms\\c04099b7cae5da72924f6484dc659b8c\\workspace\\transformed\\appcompat-1.6.1\\res\\values-kk\\values-kk.xml",

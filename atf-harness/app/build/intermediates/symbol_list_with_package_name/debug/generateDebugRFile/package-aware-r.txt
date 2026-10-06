@@ -1,4 +1,4 @@
-com.poc.a11y.atf.harness
+com.fireflink.a11y.atf
 string app_name
 string service_description
 string service_label

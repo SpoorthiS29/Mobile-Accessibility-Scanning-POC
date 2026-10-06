@@ -1,7 +1,7 @@
 {
     "logs": [
         {
-            "outputFile": "com.poc.a11y.atf.harness.app-mergeDebugResources-25:/values-h480dp-land-v13/values-h480dp-land-v13.xml",
+            "outputFile": "com.fireflink.a11y.atf.app-mergeDebugResources-25:/values-h480dp-land-v13/values-h480dp-land-v13.xml",
             "map": [
                 {
                     "source": "C:\\Users\\User\\.gradle\\caches\\9.1.0\\transforms\\3a6bb702508a427951d567e37ace88b9\\workspace\\transformed\\material-1.2.0-rc01\\res\\values-h480dp-land-v13\\values-h480dp-land-v13.xml",

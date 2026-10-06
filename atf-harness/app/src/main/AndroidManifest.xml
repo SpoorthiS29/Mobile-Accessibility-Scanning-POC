@@ -8,7 +8,7 @@
       ScanCommandReceiver. Appium's UiAutomator2 server keeps running.
 
       WRITE_SETTINGS is granted over adb
-      (appops set com.poc.a11y.atf.harness WRITE_SETTINGS allow) and is only
+      (appops set com.fireflink.a11y.atf WRITE_SETTINGS allow) and is only
       used by the WCAG 1.3.4 Orientation check to rotate the display.
     -->
     <uses-permission android:name="android.permission.WRITE_SETTINGS" />
@@ -18,7 +18,7 @@
         android:allowBackup="false">
 
         <service
-            android:name=".AtfAccessibilityService"
+            android:name="com.fireflink.a11y.atf.AtfAccessibilityService"
             android:exported="true"
             android:label="@string/service_label"
             android:permission="android.permission.BIND_ACCESSIBILITY_SERVICE">
@@ -32,12 +32,12 @@
 
         <!-- DUMP is held by the shell (adb) and the system only. -->
         <receiver
-            android:name=".ScanCommandReceiver"
+            android:name="com.fireflink.a11y.atf.ScanCommandReceiver"
             android:exported="true"
             android:permission="android.permission.DUMP">
             <intent-filter>
-                <action android:name="com.poc.a11y.atf.harness.action.PING" />
-                <action android:name="com.poc.a11y.atf.harness.action.SCAN" />
+                <action android:name="com.fireflink.a11y.atf.action.PING" />
+                <action android:name="com.fireflink.a11y.atf.action.SCAN" />
             </intent-filter>
         </receiver>
     </application>

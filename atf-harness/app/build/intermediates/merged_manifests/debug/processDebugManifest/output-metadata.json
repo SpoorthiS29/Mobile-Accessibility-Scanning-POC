@@ -4,7 +4,7 @@
     "type": "MERGED_MANIFESTS",
     "kind": "Directory"
   },
-  "applicationId": "com.poc.a11y.atf.harness",
+  "applicationId": "com.fireflink.a11y.atf",
   "variantName": "debug",
   "elements": [
     {

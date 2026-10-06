@@ -3,14 +3,14 @@ plugins {
 }
 
 android {
-    namespace 'com.poc.a11y.atf.harness'
+    namespace 'com.fireflink.a11y.atf'
     compileSdk 34
 
     defaultConfig {
         // Single APK: the scan runs inside AtfAccessibilityService. There is no
         // androidTest / instrumentation APK any more, so UiAutomator2 never has
         // to be stopped and restarted around a scan.
-        applicationId "com.poc.a11y.atf.harness"
+        applicationId "com.fireflink.a11y.atf"
         minSdk 26          // screenshots (contrast checks, crops) need API 30+
         targetSdk 34
         versionCode 2

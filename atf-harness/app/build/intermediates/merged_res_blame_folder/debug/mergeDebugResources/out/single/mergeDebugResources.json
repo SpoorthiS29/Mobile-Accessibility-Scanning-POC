@@ -1,6 +1,6 @@
 [
     {
-        "merged": "com.poc.a11y.atf.harness.app-debug-27:/xml_atf_accessibility_service.xml.flat",
-        "source": "com.poc.a11y.atf.harness.app-main-29:/xml/atf_accessibility_service.xml"
+        "merged": "com.fireflink.a11y.atf.app-debug-27:/xml_atf_accessibility_service.xml.flat",
+        "source": "com.fireflink.a11y.atf.app-main-29:/xml/atf_accessibility_service.xml"
     }
 ]
